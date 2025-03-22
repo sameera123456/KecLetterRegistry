@@ -1,0 +1,131 @@
+2025-03-19 17:00:58,572 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.1.34:8080
+2025-03-19 17:00:58,572 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-19 17:00:58,579 - werkzeug - INFO -  * Restarting with stat
+2025-03-19 17:00:59,370 - werkzeug - WARNING -  * Debugger is active!
+2025-03-19 17:00:59,376 - werkzeug - INFO -  * Debugger PIN: 110-151-565
+2025-03-19 17:01:16,878 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:16] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-03-19 17:01:17,684 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:17] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-03-19 17:01:17,915 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:17] "GET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-19 17:01:17,927 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:17] "GET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-19 17:01:17,986 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:17] "GET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-19 17:01:18,068 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:18] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:01:20,825 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:20] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-03-19 17:01:20,845 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:20] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:01:20,851 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:20] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:01:20,866 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:20] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:01:20,894 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:20] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:01:21,424 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:21] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-03-19 17:01:21,443 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:21] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:01:21,450 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:21] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:01:21,470 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:21] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:01:21,602 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:21] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:01:21,649 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:21] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-03-19 17:01:21,669 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:21] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:01:21,671 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:21] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:01:21,684 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:21] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:01:21,812 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:21] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:01:26,719 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:26] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-03-19 17:01:26,739 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:26] "[36mGET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:01:26,742 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:26] "[36mGET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:01:26,762 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:26] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:01:26,796 - werkzeug - INFO - 192.168.1.34 - - [19/Mar/2025 17:01:26] "[36mGET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:02:13,786 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.1.34:8080
+2025-03-19 17:02:13,787 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-19 17:02:13,791 - werkzeug - INFO -  * Restarting with stat
+2025-03-19 17:02:14,633 - werkzeug - WARNING -  * Debugger is active!
+2025-03-19 17:02:14,639 - werkzeug - INFO -  * Debugger PIN: 110-151-565
+2025-03-19 17:02:17,355 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:17] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-19 17:02:17,372 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:17] "[35m[1mGET /login?next=%2F HTTP/1.1[0m" 500 -
+2025-03-19 17:02:17,567 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:17] "GET /login?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-19 17:02:17,568 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:17] "GET /login?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-19 17:02:17,616 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:17] "GET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-19 17:02:17,684 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:17] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:02:18,474 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:18] "[35m[1mGET /login?next=%2F HTTP/1.1[0m" 500 -
+2025-03-19 17:02:18,490 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:18] "[36mGET /login?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:02:18,490 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:18] "[36mGET /login?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:02:18,504 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:18] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:02:18,530 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:02:18] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:03:26,093 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.1.34:8080
+2025-03-19 17:03:26,093 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-19 17:03:26,098 - werkzeug - INFO -  * Restarting with stat
+2025-03-19 17:03:26,906 - werkzeug - WARNING -  * Debugger is active!
+2025-03-19 17:03:26,911 - werkzeug - INFO -  * Debugger PIN: 110-151-565
+2025-03-19 17:03:26,947 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:26] "[35m[1mGET /login?next=%2F HTTP/1.1[0m" 500 -
+2025-03-19 17:03:27,140 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:27] "[36mGET /login?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:03:27,141 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:27] "[36mGET /login?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:03:27,156 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:27] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:03:27,184 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:27] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:03:28,571 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:28] "[35m[1mGET /login?next=%2F HTTP/1.1[0m" 500 -
+2025-03-19 17:03:28,589 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:28] "[36mGET /login?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:03:28,592 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:28] "[36mGET /login?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:03:28,602 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:28] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:03:28,632 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:28] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:03:29,314 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:29] "[35m[1mGET /login?next=%2F HTTP/1.1[0m" 500 -
+2025-03-19 17:03:29,329 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:29] "[36mGET /login?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:03:29,336 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:29] "[36mGET /login?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:03:29,353 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:29] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:03:29,376 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:29] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:03:29,956 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:29] "[35m[1mGET /login?next=%2F HTTP/1.1[0m" 500 -
+2025-03-19 17:03:29,977 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:29] "[36mGET /login?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:03:29,978 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:29] "[36mGET /login?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:03:29,995 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:29] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:03:30,021 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:30] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:03:30,394 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:30] "[35m[1mGET /login?next=%2F HTTP/1.1[0m" 500 -
+2025-03-19 17:03:30,411 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:30] "[36mGET /login?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:03:30,413 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:30] "[36mGET /login?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:03:30,427 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:30] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:03:30,451 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:03:30] "[36mGET /login?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:05:27,145 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.1.34:8080
+2025-03-19 17:05:27,145 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-19 17:05:27,149 - werkzeug - INFO -  * Restarting with stat
+2025-03-19 17:05:28,036 - werkzeug - WARNING -  * Debugger is active!
+2025-03-19 17:05:28,041 - werkzeug - INFO -  * Debugger PIN: 110-151-565
+2025-03-19 17:06:01,333 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:06:01] "GET /login?next=%2F HTTP/1.1" 200 -
+2025-03-19 17:06:01,445 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:06:01] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-19 17:06:13,379 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:06:13] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-03-19 17:06:13,388 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:06:13] "GET / HTTP/1.1" 200 -
+2025-03-19 17:07:43,705 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.1.34:8080
+2025-03-19 17:07:43,705 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-19 17:07:43,707 - werkzeug - INFO -  * Restarting with stat
+2025-03-19 17:07:44,496 - werkzeug - WARNING -  * Debugger is active!
+2025-03-19 17:07:44,503 - werkzeug - INFO -  * Debugger PIN: 110-151-565
+2025-03-19 17:09:09,073 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:09:09] "GET / HTTP/1.1" 200 -
+2025-03-19 17:09:22,712 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:09:22] "[35m[1mGET /letters HTTP/1.1[0m" 500 -
+2025-03-19 17:09:22,891 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:09:22] "GET /letters?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-03-19 17:09:22,891 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:09:22] "GET /letters?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-03-19 17:09:22,905 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:09:22] "GET /letters?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-03-19 17:09:22,949 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:09:22] "[36mGET /letters?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:09:25,953 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:09:25] "[35m[1mGET /letters HTTP/1.1[0m" 500 -
+2025-03-19 17:09:25,972 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:09:25] "[36mGET /letters?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:09:25,976 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:09:25] "[36mGET /letters?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:09:25,992 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:09:25] "[36mGET /letters?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:10:47,317 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:47] "[35m[1mGET /letters HTTP/1.1[0m" 500 -
+2025-03-19 17:10:47,345 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:47] "[36mGET /letters?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:10:47,353 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:47] "[36mGET /letters?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:10:47,363 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:47] "[36mGET /letters?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:10:52,294 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:52] "[35m[1mGET /letters HTTP/1.1[0m" 500 -
+2025-03-19 17:10:52,315 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:52] "[36mGET /letters?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:10:52,316 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:52] "[36mGET /letters?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:10:52,326 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:52] "[36mGET /letters?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:10:59,400 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:59] "[35m[1mGET /letters HTTP/1.1[0m" 500 -
+2025-03-19 17:10:59,419 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:59] "[36mGET /letters?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-03-19 17:10:59,424 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:59] "[36mGET /letters?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-03-19 17:10:59,436 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:10:59] "[36mGET /letters?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-03-19 17:11:01,410 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:11:01] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-03-19 17:11:01,413 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:11:01] "[32mGET / HTTP/1.1[0m" 302 -
+2025-03-19 17:11:01,422 - werkzeug - INFO - 127.0.0.1 - - [19/Mar/2025 17:11:01] "GET /login?next=%2F HTTP/1.1" 200 -
