@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Site - {{ site.name }} - Letter Registry System{% endblock %}
+
+{% block page_heading %}Edit Site - {{ site.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-edit me-2"></i>Edit Site
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('sites.edit_site', site_id=site.id) }}">
+                        <div class="mb-3 row">
+                            <label for="name" class="col-sm-3 col-form-label">Site Name *</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="name" name="name" value="{{ site.name }}" required {% if site.name == 'Head Office' %}readonly{% endif %}>
+                                {% if site.name == 'Head Office' %}
+                                <div class="form-text text-warning">Head Office name cannot be changed</div>
+                                {% else %}
+                                <div class="form-text">Full name of the site (e.g., Bangalore Office)</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 row">
+                            <label for="code" class="col-sm-3 col-form-label">Site Code *</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="code" name="code" 
+                                       value="{{ site.code }}"
+                                       required pattern="[A-Za-z0-9\-]+"
+                                       title="Site code can contain only letters, numbers and hyphens"
+                                       {% if site.name == 'Head Office' %}readonly{% endif %}>
+                                {% if site.name == 'Head Office' %}
+                                <div class="form-text text-warning">Head Office code cannot be changed</div>
+                                {% else %}
+                                <div class="form-text">Unique site identifier (e.g., BLR)</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 row">
+                            <label for="description" class="col-sm-3 col-form-label">Description</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="description" name="description" rows="3">{{ site.description }}</textarea>
+                                <div class="form-text">Brief description of the site</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 row">
+                            <label for="address" class="col-sm-3 col-form-label">Address</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="address" name="address" rows="3">{{ site.address }}</textarea>
+                                <div class="form-text">Physical address of the site</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end mt-4">
+                            <a href="{{ url_for('sites.list_sites') }}" class="btn btn-secondary me-2">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Sites
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Update Site
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    // Auto-format site code to uppercase
+    document.getElementById('code').addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+    });
+</script>
+{% endblock %}
+{% endblock %} 

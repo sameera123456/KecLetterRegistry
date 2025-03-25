@@ -1,0 +1,497 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Incoming' if letter_type == 'incoming' else 'Outgoing' if letter_type == 'outgoing' else 'All' }} Letters - Letter Registry System{% endblock %}
+
+{% block page_heading %}{{ 'Incoming' if letter_type == 'incoming' else 'Outgoing' if letter_type == 'outgoing' else 'All' }} Letters{% endblock %}
+
+{% block extra_css %}
+<style>
+    .filter-btn.active {
+        background-color: #4e73df;
+        color: white;
+    }
+    .table th, .table td {
+        padding: 0.35rem 0.5rem;
+        vertical-align: middle;
+        font-size: 0.8rem;
+    }
+    .btn-sm-icon {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
+    }
+    .icon-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 4px;
+        font-size: 0.7rem;
+    }
+    .btn-letter-type {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+        margin-right: 0.2rem;
+    }
+    .badge-pill {
+        padding: 0.2rem 0.4rem;
+        border-radius: 50rem;
+        font-size: 0.7rem;
+        white-space: nowrap;
+        display: inline-block;
+        min-width: 70px;
+        text-align: center;
+    }
+    .status-pending { background-color: #ffc107; color: #212529; }
+    .status-progress { background-color: #17a2b8; color: white; }
+    .status-completed { background-color: #28a745; color: white; }
+    .status-archived { background-color: #6c757d; color: white; }
+    .icon-inbox { background-color: #4e73df; color: white; }
+    .icon-outbox { background-color: #e74a3b; color: white; }
+    .icon-all { background-color: #1cc88a; color: white; }
+    .card-header-compact { padding: 0.5rem 0.75rem; }
+    .card-body-compact { padding: 0.5rem; }
+    .letter-number {
+        font-family: monospace;
+        font-size: 0.8rem;
+    }
+    .btn-action {
+        padding: 0.15rem 0.3rem;
+        font-size: 0.7rem;
+    }
+    .action-icons i {
+        font-size: 0.8rem;
+    }
+    .grid-view {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-gap: 0.5rem;
+    }
+    .grid-card {
+        border: 1px solid #e3e6f0;
+        border-radius: 0.25rem;
+        overflow: hidden;
+        background-color: white;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .grid-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+    }
+    .grid-card-header {
+        padding: 0.5rem;
+        border-bottom: 1px solid #e3e6f0;
+        background-color: #f8f9fc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .grid-card-body {
+        padding: 0.5rem;
+    }
+    .grid-card-footer {
+        padding: 0.5rem;
+        border-top: 1px solid #e3e6f0;
+        background-color: #f8f9fc;
+        text-align: right;
+    }
+    .mb-1 {
+        margin-bottom: 0.25rem !important;
+    }
+    .letter-title {
+        font-weight: 600;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .letter-meta {
+        font-size: 0.75rem;
+        color: #6c757d;
+        display: flex;
+        justify-content: space-between;
+    }
+    .letter-subject {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        height: 2.4rem;
+    }
+    .letter-description {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.3;
+        max-height: 3.9em; /* Additional fallback: 3 lines * 1.3 line-height */
+    }
+    .view-toggle {
+        display: flex;
+    }
+    .view-toggle .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Letter Type Filter -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-filter me-2"></i>Filter Letters
+                    </h6>
+                    {% if current_site %}
+                    <span class="badge bg-info text-white">
+                        <i class="fas fa-building me-1"></i>{{ current_site.name }}
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group w-100 mb-3" role="group">
+                                <a href="{{ url_for('letters.list_letters') }}" class="btn {{ 'btn-primary' if letter_type == 'all' else 'btn-outline-primary' }}">
+                                    <i class="fas fa-list me-1"></i>All Letters
+                                </a>
+                                <a href="{{ url_for('letters.list_letters', is_incoming='true') }}" class="btn {{ 'btn-primary' if letter_type == 'incoming' else 'btn-outline-primary' }}">
+                                    <i class="fas fa-inbox me-1"></i>Incoming
+                                </a>
+                                <a href="{{ url_for('letters.list_letters', is_incoming='false') }}" class="btn {{ 'btn-primary' if letter_type == 'outgoing' else 'btn-outline-primary' }}">
+                                    <i class="fas fa-paper-plane me-1"></i>Outgoing
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between">
+                                {% if projects %}
+                                <div class="dropdown me-2">
+                                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="projectDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-project-diagram me-1"></i>
+                                        {% if project_code %}
+                                            Project: {{ project_code }}
+                                        {% else %}
+                                            All Projects
+                                        {% endif %}
+                            </button>
+                                    <ul class="dropdown-menu" aria-labelledby="projectDropdown">
+                                        <li><a class="dropdown-item" href="{{ url_for('letters.list_letters', is_incoming='true' if letter_type == 'incoming' else 'false' if letter_type == 'outgoing' else None) }}">All Projects</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        {% for project in projects %}
+                                        <li><a class="dropdown-item" href="{{ url_for('letters.list_letters', is_incoming='true' if letter_type == 'incoming' else 'false' if letter_type == 'outgoing' else None, project_code=project.project_code) }}">{{ project.project_code }} - {{ project.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                                {% if current_user.is_head_office_admin or current_user.is_project_admin %}
+                                <a href="{{ url_for('letters.create_letter', letter_type=letter_type) }}" class="btn btn-success">
+                                    <i class="fas fa-plus-circle me-1"></i>New Letter
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                            </div>
+    
+    <!-- Letter List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-envelope me-2"></i>{{ 'Incoming' if letter_type == 'incoming' else 'Outgoing' if letter_type == 'outgoing' else 'All' }} Letters
+                    </h6>
+                    <div class="d-flex">
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" class="form-control" placeholder="Search letters..." id="letterSearch">
+                            <button class="btn btn-outline-secondary" type="button" id="searchButton">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="dropdown ms-2">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-filter me-1"></i>Filter
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
+                                <li><h6 class="dropdown-header">Status</h6></li>
+                                <li><a class="dropdown-item filter-item" href="#" data-filter="status" data-value="Pending">Pending</a></li>
+                                <li><a class="dropdown-item filter-item" href="#" data-filter="status" data-value="In Progress">In Progress</a></li>
+                                <li><a class="dropdown-item filter-item" href="#" data-filter="status" data-value="Completed">Completed</a></li>
+                                <li><a class="dropdown-item filter-item" href="#" data-filter="status" data-value="Archived">Archived</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Priority</h6></li>
+                                <li><a class="dropdown-item filter-item" href="#" data-filter="priority" data-value="High">High</a></li>
+                                <li><a class="dropdown-item filter-item" href="#" data-filter="priority" data-value="Medium">Medium</a></li>
+                                <li><a class="dropdown-item filter-item" href="#" data-filter="priority" data-value="Low">Low</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="clearFilters">Clear All Filters</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if letters %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="lettersTable" width="100%" cellspacing="0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th width="2%">Type</th>
+                                    <th width="10%">Letter No.</th>
+                                    <th width="8%">Date</th>
+                                    <th width="12%">Project</th>
+                                    <th width="18%">Subject</th>
+                                    <th width="15%">Description</th>
+                                    <th width="15%">Sender/Recipient</th>
+                                    <th width="8%">Status</th>
+                                    <th width="12%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for letter in letters %}
+                                <tr>
+                                    <td class="text-center">
+                                            <span class="icon-badge {{ 'icon-inbox' if letter.is_incoming else 'icon-outbox' }}">
+                                                <i class="fas fa-{{ 'inbox' if letter.is_incoming else 'paper-plane' }}"></i>
+                                            </span>
+                                    </td>
+                                    <td>{{ letter.letter_number }}</td>
+                                    <td>{{ letter.date.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        {% if letter.project %}
+                                            <a href="{{ url_for('projects.view_project', project_id=letter.project.id) }}">
+                                                {{ letter.project.project_code }}
+                                            </a>
+                                            <div class="small text-muted">{{ letter.project.name }}</div>
+                                        {% else %}
+                                            <span class="text-muted">Not assigned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('letters.view_letter', letter_id=letter.id) }}" class="letter-link">
+                                            {{ letter.object_of }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {% if letter.description %}
+                                            {{ letter.description|truncate(100) }}
+                                        {% else %}
+                                            <span class="text-muted">No description</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if letter.is_incoming %}
+                                            <div>
+                                                <span class="fw-bold">From:</span> {{ letter.sender }}
+                                            </div>
+                                            <div class="small text-muted">
+                                                <span class="fw-bold">To:</span> {{ letter.recipient }}
+                                            </div>
+                                        {% else %}
+                                            <div>
+                                                <span class="fw-bold">To:</span> {{ letter.recipient }}
+                                            </div>
+                                            <div class="small text-muted">
+                                                <span class="fw-bold">From:</span> {{ letter.sender }}
+                                        </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ letter.status|lower == 'pending' and 'warning' or letter.status|lower == 'completed' and 'success' or letter.status|lower == 'in progress' and 'info' or 'secondary' }}">
+                                            {{ letter.status|default('Unknown') }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <a href="{{ url_for('letters.view_letter', letter_id=letter.id) }}" class="btn btn-sm btn-outline-primary" title="View Letter">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            {% if current_user.is_head_office_admin or current_user.is_project_admin %}
+                                            <a href="{{ url_for('letters.edit_letter', letter_id=letter.id) }}" class="btn btn-sm btn-outline-secondary" title="Edit Letter">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" title="Delete Letter" data-bs-toggle="modal" data-bs-target="#deleteLetterModal{{ letter.id }}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- Delete Modal -->
+                                        <div class="modal fade" id="deleteLetterModal{{ letter.id }}" tabindex="-1" aria-labelledby="deleteLetterModalLabel{{ letter.id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="deleteLetterModalLabel{{ letter.id }}">Confirm Delete</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body text-start">
+                                                        <p>Are you sure you want to delete this letter?</p>
+                                                        <div class="alert alert-warning">
+                                                            <div><strong>Letter Number:</strong> {{ letter.letter_number }}</div>
+                                                            <div><strong>Subject:</strong> {{ letter.object_of }}</div>
+                                                        </div>
+                                                        <p class="text-danger">This action cannot be undone!</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <form action="{{ url_for('letters.delete_letter', letter_id=letter.id) }}" method="POST">
+                                                            <input type="hidden" name="source" value="{{ letter_type }}">
+                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-envelope fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">No letters found</h5>
+                        <p>Start by adding your first letter.</p>
+                        {% if current_user.is_head_office_admin or current_user.is_project_admin %}
+                        <a href="{{ url_for('letters.create_letter', letter_type=letter_type) }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>Add New Letter
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize the search and filter functionality
+        initLetterTable();
+    });
+    
+    // Search and filter functionality for letters table
+    function initLetterTable() {
+        const letterSearch = document.getElementById('letterSearch');
+        const searchButton = document.getElementById('searchButton');
+        const filterItems = document.querySelectorAll('.filter-item');
+        const clearFilters = document.getElementById('clearFilters');
+        const lettersTable = document.getElementById('lettersTable');
+        
+        if (!lettersTable) return;  // Exit if table doesn't exist
+
+        // Active filters
+        let activeFilters = {
+            status: null,
+            priority: null
+        };
+        
+        // Handle search button click
+        searchButton.addEventListener('click', function() {
+            filterLetters();
+        });
+        
+        // Handle enter key in search input
+        letterSearch.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                filterLetters();
+            }
+        });
+        
+        // Handle filter item clicks
+        filterItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const filterType = this.getAttribute('data-filter');
+                const filterValue = this.getAttribute('data-value');
+                
+                // Toggle filter
+                if (activeFilters[filterType] === filterValue) {
+                    activeFilters[filterType] = null;
+                    this.classList.remove('active');
+                } else {
+                    // Clear other active filters of same type
+                    document.querySelectorAll(`.filter-item[data-filter="${filterType}"]`).forEach(el => {
+                        el.classList.remove('active');
+                    });
+                    activeFilters[filterType] = filterValue;
+                    this.classList.add('active');
+                }
+                
+                filterLetters();
+    });
+});
+
+        // Clear all filters
+        clearFilters.addEventListener('click', function(e) {
+            e.preventDefault();
+            letterSearch.value = '';
+            activeFilters.status = null;
+            activeFilters.priority = null;
+            
+            // Remove active class from all filter items
+            filterItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            filterLetters();
+        });
+        
+        // Function to filter letters
+        function filterLetters() {
+            const searchValue = letterSearch.value.toUpperCase();
+            const rows = lettersTable.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                let showRow = true;
+                
+                // Check search text
+                if (searchValue) {
+                    const text = row.textContent.toUpperCase();
+                    if (text.indexOf(searchValue) === -1) {
+                        showRow = false;
+                    }
+                }
+                
+                // Check status filter
+                if (showRow && activeFilters.status) {
+                    const statusCell = row.querySelector('td:nth-child(8)'); // Status column
+                    if (statusCell && statusCell.textContent.trim().indexOf(activeFilters.status) === -1) {
+                        showRow = false;
+                    }
+                }
+                
+                // Check priority filter
+                if (showRow && activeFilters.priority) {
+                    // Priority might be in the subject or description
+                    const hasMatchingPriority = row.textContent.includes(activeFilters.priority);
+                    if (!hasMatchingPriority) {
+                        showRow = false;
+                    }
+                }
+                
+                // Show/hide row
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+    }
+</script>
+{% endblock %} 

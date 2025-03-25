@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Project - Letter Registry System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-edit me-2"></i>Edit Project: {{ project.project_code }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('projects.edit_project', project_id=project.id) }}">
+                        <div class="mb-3 row">
+                            <label for="project_code" class="col-sm-3 col-form-label">Project Code</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="project_code" name="project_code" 
+                                       value="{{ project.project_code }}" readonly disabled>
+                                <div class="form-text">Project code cannot be changed</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 row">
+                            <label for="name" class="col-sm-3 col-form-label">Project Name *</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="name" name="name" 
+                                       value="{{ project.name }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 row">
+                            <label for="description" class="col-sm-3 col-form-label">Description</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="description" name="description" rows="5">{{ project.description }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 row">
+                            <label for="address" class="col-sm-3 col-form-label">Address</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="address" name="address" rows="3">{{ project.address }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 row">
+                            <div class="col-sm-3">Head Office</div>
+                            <div class="col-sm-9">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is_head_office" name="is_head_office" 
+                                           {% if project.is_head_office %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_head_office">
+                                        This is a Head Office project
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end mt-4">
+                            <a href="{{ url_for('projects.view_project', project_id=project.id) }}" class="btn btn-secondary me-2">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

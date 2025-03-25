@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Letter: {{ letter.letter_number }} - Letter Registry System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    .form-section {
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .form-section-title {
+        color: #2c3e50;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
+    .icon-info { color: #17a2b8; }
+    .icon-file { color: #6610f2; }
+    .icon-tasks { color: #fd7e14; }
+    .icon-upload { color: #dc3545; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-2">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white py-2 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-edit me-2"></i>Edit Letter: {{ letter.letter_number }}
+            </h5>
+            <a href="{{ url_for('letters.view_letter', letter_id=letter.id) }}" class="btn btn-sm btn-light">
+                <i class="fas fa-arrow-left me-1"></i>Back
+            </a>
+        </div>
+        <div class="card-body p-2">
+            <form method="POST" action="{{ url_for('letters.edit_letter', letter_id=letter.id) }}" enctype="multipart/form-data" class="compact-form">
+                <div class="row g-2">
+                    <div class="col-md-12">
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="fas fa-info-circle me-1 icon-info"></i> Letter Information
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-4 mb-2">
+                                    <label class="form-label">Letter Number</label>
+                                    <input type="text" class="form-control" value="{{ letter.letter_number }}" readonly disabled>
+                                    <div class="form-text">Cannot be changed</div>
+                                </div>
+                                
+                                <div class="col-md-4 mb-2">
+                                    <label for="project_id" class="form-label">Project</label>
+                                    <select class="form-select" id="project_id" name="project_id" disabled>
+                                        {% for project in projects %}
+                                        <option value="{{ project.id }}" {% if project.id == letter.project_id %}selected{% endif %}>
+                                            {{ project.project_code }} - {{ project.name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="form-text">Cannot be changed</div>
+                                </div>
+                                
+                                <div class="col-md-4 mb-2">
+                                    <label for="date" class="form-label required-field">Date</label>
+                                    <input type="date" class="form-control" id="date" name="date" required 
+                                           value="{{ letter.date.strftime('%Y-%m-%d') }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="fas fa-file-alt me-1 icon-file"></i> Letter Details
+                            </div>
+                            
+                            <div class="mb-2">
+                                <label for="object_of" class="form-label required-field">Subject/Object</label>
+                                <input type="text" class="form-control" id="object_of" name="object_of" required value="{{ letter.object_of }}">
+                            </div>
+                            
+                            <div class="row g-2">
+                                <div class="col-md-6 mb-2">
+                                    <label for="ho_number" class="form-label">H.O. Number</label>
+                                    <input type="text" class="form-control" id="ho_number" name="ho_number" value="{{ letter.ho_number }}">
+                                </div>
+                                
+                                <div class="col-md-6 mb-2">
+                                    <label for="project_number" class="form-label">Project Number</label>
+                                    <input type="text" class="form-control" id="project_number" name="project_number" value="{{ letter.project_number }}">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="2">{{ letter.description }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="fas fa-tasks me-1 icon-tasks"></i> Additional Details
+                            </div>
+                            
+                            <div class="row g-2">
+                                <div class="col-md-6 mb-2">
+                                    <label for="in_charge" class="form-label">In Charge</label>
+                                    <input type="text" class="form-control" id="in_charge" name="in_charge" value="{{ letter.in_charge }}">
+                                </div>
+                                
+                                <div class="col-md-6 mb-2">
+                                    <label for="reference" class="form-label">Reference</label>
+                                    <input type="text" class="form-control" id="reference" name="reference" value="{{ letter.reference }}">
+                                </div>
+                                
+                                <div class="col-md-6 mb-2">
+                                    <label for="sender" class="form-label">{{ 'Sender' if letter.is_incoming else 'Recipient' }}</label>
+                                    <input type="text" class="form-control" id="sender" name="sender" value="{{ letter.sender }}">
+                                </div>
+                                
+                                <div class="col-md-6 mb-2">
+                                    <label for="recipient" class="form-label">{{ 'Recipient' if letter.is_incoming else 'Sender' }}</label>
+                                    <input type="text" class="form-control" id="recipient" name="recipient" value="{{ letter.recipient }}">
+                                </div>
+                                
+                                <div class="col-md-6 mb-2">
+                                    <label for="priority" class="form-label">Priority</label>
+                                    <select class="form-select" id="priority" name="priority">
+                                        <option value="">Select Priority</option>
+                                        <option value="High" {% if letter.priority == 'High' %}selected{% endif %}>High</option>
+                                        <option value="Medium" {% if letter.priority == 'Medium' %}selected{% endif %}>Medium</option>
+                                        <option value="Low" {% if letter.priority == 'Low' %}selected{% endif %}>Low</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-2">
+                                    <label for="status" class="form-label">Status</label>
+                                    <select class="form-select" id="status" name="status">
+                                        <option value="Pending" {% if letter.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="In Progress" {% if letter.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                        <option value="Completed" {% if letter.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                        <option value="Archived" {% if letter.status == 'Archived' %}selected{% endif %}>Archived</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <label for="remarks" class="form-label">Remarks</label>
+                                <textarea class="form-control" id="remarks" name="remarks" rows="2">{{ letter.remarks }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <div class="form-section">
+                            <div class="form-section-title">
+                                <i class="fas fa-upload me-1 icon-upload"></i> File Management
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="letter_file" class="form-label">Update Letter File</label>
+                                <input type="file" class="form-control" id="letter_file" name="letter_file" accept=".pdf">
+                                <div class="form-text">Upload the letter in PDF format (max 64MB)</div>
+                            </div>
+                            
+                            {% if letter.file_name %}
+                            <div class="mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="delete_current_file" name="delete_current_file">
+                                    <label class="form-check-label" for="delete_current_file">
+                                        Delete current file: {{ letter.file_name }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 text-end mt-2">
+                        <a href="{{ url_for('letters.view_letter', letter_id=letter.id) }}" class="btn btn-secondary me-2">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Save Changes
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr("#date", {
+            dateFormat: "Y-m-d",
+            allowInput: true
+        });
+    });
+</script>
+{% endblock %} 

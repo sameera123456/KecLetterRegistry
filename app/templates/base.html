@@ -1,0 +1,2734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Letter Registry System{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Dark Mode CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dark-mode.css') }}">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --secondary-color: #858796;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --purple-color: #6f42c1;
+            --orange-color: #fd7e14;
+            --teal-color: #20c997;
+            --pink-color: #e83e8c;
+        }
+        
+        body {
+            font-size: 0.9rem;
+            background-color: #f8f9fc;
+        }
+        
+        body.dark-mode {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        
+        .sidebar {
+            background-color: #4e73df;
+            background-image: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            transition: all 0.3s;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .logo-section {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo-text {
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .compact-logo-text {
+            display: none;
+        }
+        
+        .nav-grid {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0.3rem;
+        }
+        
+        .nav-item-grid {
+            width: 33.33%;
+            padding: 0.15rem;
+            transition: all 0.2s;
+        }
+        
+        .nav-link-grid {
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            padding: 0.5rem 0.15rem;
+            border-radius: 0.25rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            transition: all 0.2s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        
+        .nav-link-grid:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .nav-link-grid.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .icon-container {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            margin-bottom: 0.15rem;
+        }
+        
+        .nav-text {
+            font-size: 0.6rem;
+            margin-top: 0.15rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .icon-dashboard { background-color: var(--primary-color); }
+        .icon-projects { background-color: var(--success-color); }
+        .icon-incoming { background-color: var(--info-color); }
+        .icon-outgoing { background-color: var(--warning-color); }
+        .icon-new-letter { background-color: var(--danger-color); }
+        .icon-new-project { background-color: var(--orange-color); }
+        .icon-profile { background-color: var(--purple-color); }
+        .icon-settings { background-color: var(--teal-color); }
+        .icon-reports { background-color: var(--pink-color); }
+        .icon-utilities { background-color: var(--teal-color); }
+        .icon-help { background-color: var(--purple-color); }
+        
+        .main-content {
+            margin-left: 250px;
+            min-height: 100vh;
+            padding: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .collapsed-sidebar .sidebar {
+            width: 90px;
+        }
+        
+        .collapsed-sidebar .compact-logo-text {
+            display: block;
+        }
+        
+        .collapsed-sidebar .full-logo-text {
+            display: none;
+        }
+        
+        .collapsed-sidebar .main-content {
+            margin-left: 90px;
+        }
+        
+        .sidebar-toggler {
+            position: fixed;
+            bottom: 1rem;
+            left: 250px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 101;
+            cursor: pointer;
+            transform: translateX(-50%);
+            transition: all 0.3s;
+        }
+        
+        .collapsed-sidebar .sidebar-toggler {
+            left: 90px;
+        }
+        
+        .navbar-top {
+            height: 60px;
+            background-color: white;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+        }
+        
+        /* Project badges */
+        .badge-project {
+            background-color: #4e73df;
+            color: white;
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        
+        .badge-access {
+            background-color: #1cc88a;
+            color: white;
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        
+        .page-heading {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+            margin: 0;
+        }
+        
+        .user-dropdown {
+            position: relative;
+        }
+        
+        .user-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            color: var(--dark-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+        }
+        
+        .user-dropdown-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--primary-color);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+        }
+        
+        .user-dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            border-radius: 0.25rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            width: 200px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .user-dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: var(--dark-color);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f8f9fc;
+            color: var(--primary-color);
+        }
+        
+        .dropdown-divider {
+            height: 0;
+            margin: 0.5rem 0;
+            overflow: hidden;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        body.dark-mode .user-dropdown-menu {
+            background-color: #2c3e50;
+            border: 1px solid #4a5568;
+        }
+        
+        body.dark-mode .dropdown-item {
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .dropdown-item:hover {
+            background-color: #3d4852;
+            color: white;
+        }
+        
+        body.dark-mode .dropdown-divider {
+            border-top: 1px solid #4a5568;
+        }
+        
+        .content {
+            background-color: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            padding: 1.25rem;
+        }
+        
+        .compact-card {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .compact-card .card-header {
+            padding: 0.5rem 0.75rem;
+        }
+        
+        .compact-card .card-body {
+            padding: 0.75rem;
+        }
+        
+        .compact-form .form-group {
+            margin-bottom: 0.5rem;
+        }
+        
+        .compact-form .form-control {
+            font-size: 0.9rem;
+            padding: 0.375rem 0.5rem;
+        }
+        
+        .compact-form label {
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .compact-table th, .compact-table td {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+        }
+        
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                left: -250px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            
+            .sidebar-toggler {
+                display: none;
+            }
+            
+            .mobile-menu-open .sidebar {
+                left: 0;
+            }
+        }
+        
+        /* Complete Hide Sidebar */
+        .collapsed-sidebar .sidebar {
+            width: 0;
+            overflow: hidden;
+            padding: 0;
+        }
+        
+        .collapsed-sidebar .main-content {
+            margin-left: 0;
+        }
+        
+        .collapsed-sidebar .sidebar-toggler {
+            left: 20px;
+        }
+        
+        body.dark-mode .grid-card-header {
+            background-color: #2a2a2a;
+            border-color: #444;
+        }
+        
+        /* Modern compact form styling */
+        .compact-form .form-control,
+        .compact-form .form-select,
+        .compact-form .input-group-text {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            height: calc(1.4em + 0.5rem + 2px);
+        }
+        
+        .compact-form .form-label {
+            margin-bottom: 0.15rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .compact-form .mb-3 {
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .compact-form .form-text {
+            font-size: 0.75rem;
+            margin-top: 0.1rem;
+        }
+        
+        .compact-form .input-group {
+            margin-bottom: 0.25rem;
+        }
+        
+        .compact-form .btn {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.85rem;
+        }
+        
+        .compact-form .card-body {
+            padding: 0.75rem;
+        }
+        
+        .compact-form .card-header {
+            padding: 0.5rem 0.75rem;
+        }
+        
+        /* Modern style enhancements */
+        .compact-form .form-control,
+        .compact-form .form-select {
+            border-radius: 0.2rem;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid #ced4da;
+        }
+        
+        .compact-form .form-control:focus,
+        .compact-form .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.15);
+        }
+        
+        .compact-form .input-group-text {
+            background-color: #f8f9fa;
+            border-color: #ced4da;
+        }
+        
+        /* Dark mode support for compact forms */
+        body.dark-mode .compact-form .form-control,
+        body.dark-mode .compact-form .form-select {
+            background-color: #333;
+            border-color: #555;
+            color: #f0f0f0;
+        }
+        
+        body.dark-mode .compact-form .input-group-text {
+            background-color: #444;
+            border-color: #555;
+            color: #f0f0f0;
+        }
+        
+        body.dark-mode .compact-form .form-text {
+            color: #aaa;
+        }
+        
+        /* Floating label support */
+        .form-floating > .form-control,
+        .form-floating > .form-select {
+            height: calc(2.5rem + 2px);
+            padding: 1rem 0.75rem 0.25rem;
+        }
+        
+        .form-floating > label {
+            padding: 0.5rem 0.75rem;
+        }
+        
+        /* Notifications Dropdown Styles */
+        .notifications-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .notifications-toggle {
+            color: #666;
+            font-size: 1.1rem;
+            padding: 0.4rem;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .notifications-toggle:hover {
+            color: #4a4a4a;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px !important;
+            right: -5px !important;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            min-width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            transform: translate(25%, -25%) !important;
+        }
+        
+        .notification-badge:empty {
+            display: none;
+        }
+        
+        /* Add animation for new notifications */
+        @keyframes notification-pulse {
+            0% {
+                transform: translate(25%, -25%) scale(1);
+            }
+            50% {
+                transform: translate(25%, -25%) scale(1.2);
+            }
+            100% {
+                transform: translate(25%, -25%) scale(1);
+            }
+        }
+        
+        .notification-badge.has-new {
+            animation: notification-pulse 1s infinite;
+        }
+        
+        .notifications-menu {
+            position: absolute;
+            top: 100%;
+            right: -10px;
+            width: 320px;
+            max-width: 90vw;
+            background: white;
+            border-radius: 0.25rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .notifications-menu.show {
+            display: block;
+        }
+        
+        .notifications-header {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notifications-body {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f1f1;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .notification-item.unread {
+            background-color: #f0f7ff;
+        }
+        
+        .notification-item.unread:hover {
+            background-color: #e5f1ff;
+        }
+        
+        .notification-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+            font-size: 0.875rem;
+        }
+        
+        .notification-text {
+            color: #6c757d;
+            font-size: 0.8125rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .notification-time {
+            font-size: 0.75rem;
+            color: #adb5bd;
+        }
+        
+        .notifications-footer {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+        }
+        
+        .notifications-footer a {
+            color: #6c757d;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+        
+        .notifications-footer a:hover {
+            color: #343a40;
+        }
+        
+        .mark-all-read {
+            font-size: 0.75rem;
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        .mark-all-read:hover {
+            text-decoration: underline;
+        }
+        
+        .no-notifications {
+            color: #6c757d;
+        }
+        
+        /* Add CSS for positioning the notification bell */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-dropdown {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        
+        .notifications-dropdown {
+            position: relative;
+            margin-right: 1.5rem;
+        }
+        
+        .notifications-toggle {
+            color: #555;
+            font-size: 1.25rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* Notification Styles */
+        .notification-dropdown {
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .mark-all-read {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-decoration: none;
+        }
+        
+        .mark-all-read:hover {
+            color: #0d6efd;
+            text-decoration: underline;
+        }
+        
+        .notification-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .notification-item:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        
+        .notification-item.unread {
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+        
+        .notification-item.unread:hover {
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .notification-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .notification-time {
+            font-size: 0.75rem;
+            color: #adb5bd;
+        }
+        
+        .all-read-header {
+            font-size: 0.9rem;
+            color: #198754;
+        }
+        
+        .no-notifications {
+            color: #6c757d;
+        }
+        
+        /* Styling for notification indicator */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Transition effect for notification badge */
+        .notification-badge {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .has-notifications .notification-badge {
+            transform: scale(1.1);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body id="page-top" 
+    data-is-admin="{{ 'true' if current_user.is_admin else 'false' }}"
+    data-is-head-office="{{ 'true' if current_user.is_head_office else 'false' }}">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                <a href="{{ url_for('main.index') }}" class="logo-text">
+                    <span class="full-logo-text"><i class="fas fa-envelope-open-text mr-2"></i> KEC Letter Registry</span>
+                    <span class="compact-logo-text"><i class="fas fa-envelope-open-text"></i></span>
+                </a>
+            </div>
+            
+            {% if current_user.is_authenticated %}
+            <div class="nav-grid">
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid {% if request.path == url_for('main.index') %}active{% endif %}" 
+                       href="{{ url_for('main.index') }}">
+                        <div class="icon-container icon-dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="nav-text">Dashboard</div>
+                    </a>
+                </div>
+                
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid {% if '/projects' in request.path %}active{% endif %}" 
+                       href="{{ url_for('projects.list_projects') }}">
+                        <div class="icon-container icon-projects">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="nav-text">Projects</div>
+                    </a>
+                </div>
+                
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid {% if '/letters' in request.path and request.args.get('is_incoming', 'true') == 'true' %}active{% endif %}" 
+                       href="{{ url_for('letters.list_letters', is_incoming='true') }}">
+                        <div class="icon-container icon-incoming">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <div class="nav-text">Incoming</div>
+                    </a>
+                </div>
+                
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid {% if '/letters' in request.path and request.args.get('is_incoming', 'false') == 'false' %}active{% endif %}" 
+                       href="{{ url_for('letters.list_letters', is_incoming='false') }}">
+                        <div class="icon-container icon-outgoing">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <div class="nav-text">Outgoing</div>
+                    </a>
+                </div>
+                
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid {% if '/projects/create' in request.path %}active{% endif %}" 
+                       href="{{ url_for('projects.create_project') }}">
+                        <div class="icon-container icon-new-project">
+                            <i class="fas fa-folder-plus"></i>
+                        </div>
+                        <div class="nav-text">New Project</div>
+                    </a>
+                </div>
+
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid {% if '/letters/create' in request.path %}active{% endif %}" 
+                       href="{{ url_for('letters.create_letter', letter_type=request.args.get('is_incoming') == 'false' and 'outgoing' or 'incoming') }}">
+                        <div class="icon-container icon-new-letter">
+                            <i class="fas fa-envelope-open-text"></i>
+                        </div>
+                        <div class="nav-text">New Letter</div>
+                    </a>
+                </div>
+
+                {% if current_user.is_admin %}
+                <!-- Sites management link removed -->
+                {% endif %}
+                
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid" href="#" id="profileLink">
+                        <div class="icon-container icon-profile">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="nav-text">Profile</div>
+                    </a>
+                </div>
+                
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid" href="#" id="settingsLink">
+                        <div class="icon-container icon-settings">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="nav-text">Settings</div>
+                    </a>
+                </div>
+                
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid" href="{{ url_for('database.utilities') }}">
+                        <i class="fas fa-database"></i>
+                        <span>Database Utilities</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid {% if '/help' in request.path %}active{% endif %}" href="{{ url_for('main.help_page') }}">
+                        <div class="icon-container icon-help">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="nav-text">Help</div>
+                    </a>
+                </div>
+                
+                <div class="nav-item-grid">
+                    <a class="nav-link-grid" href="{{ url_for('auth.logout') }}">
+                        <div class="icon-container icon-reports">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <div class="nav-text">Logout</div>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Sidebar Toggler -->
+        <div class="sidebar-toggler" id="sidebarToggle">
+            <i class="fas fa-chevron-left" id="toggleIcon"></i>
+        </div>
+        
+        <!-- Mobile Menu Toggle -->
+        <div class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        
+        <!-- Content Wrapper -->
+        <div class="main-content">
+            {% if current_user.is_authenticated %}
+            <div class="top-navbar">
+                <div>
+                    <button class="btn btn-sm btn-link text-secondary" id="sidebarToggle">
+                        <i class="fas fa-bars fa-lg"></i>
+                    </button>
+                    <span class="fw-bold ms-2 d-none d-md-inline">{% block page_heading %}Dashboard{% endblock %}</span>
+                </div>
+                
+                <div class="d-flex align-items-center">
+                    {% if current_project %}
+                    <div class="me-3 d-none d-md-block">
+                        <span class="badge-project">
+                            <i class="fas fa-building me-1"></i>{{ current_project.name }}
+                        </span>
+                        {% if current_user.is_head_office %}
+                        <span class="badge-access">Head Office Access</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="dropdown me-3">
+                        <button class="btn btn-sm position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="notificationsToggleBtn">
+                            <i class="fas fa-bell fa-lg"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" id="notification-counter">
+                                0
+                            </span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="notificationsToggleBtn" style="min-width: 300px;">
+                            <div class="p-2 border-bottom d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">Notifications</h6>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-secondary me-1" onclick="markAllNotificationsRead()">
+                                        <i class="fas fa-check-double"></i> Mark all read
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="clearAllNotifications()">
+                                        <i class="fas fa-trash"></i> Clear all
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="notifications-list" style="max-height: 300px; overflow-y: auto;">
+                                <div id="notifications-container">
+                                    <!-- Notifications will be inserted here -->
+                                </div>
+                                <div class="text-center p-2" id="no-notifications" style="display: none;">
+                                    <p class="text-muted mb-0">No notifications</p>
+                                </div>
+                            </div>
+                            <div class="p-2 border-top">
+                                <a href="{{ url_for('main.notifications') }}" class="btn btn-primary btn-sm w-100">View all notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-dropdown d-flex align-items-center justify-content-end">
+                        <!-- User Dropdown -->
+                        <div class="user-dropdown">
+                            <a href="#" class="user-dropdown-toggle" id="userDropdownToggleBtn" data-user-id="{{ current_user.id }}">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <span>{{ current_user.username }}</span>
+                                <i class="fas fa-chevron-down ms-1"></i>
+                            </a>
+                            <div class="user-dropdown-menu" id="userDropdownMenu">
+                                <a href="#" class="dropdown-item" onclick="openProfile()">
+                                    <i class="fas fa-user-circle me-2"></i> Profile
+                                </a>
+                                <a href="#" class="dropdown-item" onclick="openSettings()">
+                                    <i class="fas fa-cog me-2"></i> Settings
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="{{ url_for('auth.logout') }}" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show mb-4" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            
+            <!-- Page Content -->
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="profileModalLabel"><i class="fas fa-user-circle me-2"></i>User Profile</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <div class="avatar-circle mx-auto mb-3" style="width: 100px; height: 100px; background-color: var(--purple-color); color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                            <i class="fas fa-user-circle" style="font-size: 4rem;"></i>
+                        </div>
+                        <h4>{{ current_user.username }}</h4>
+                        <p class="text-muted">{{ current_user.email if current_user.email else 'No email provided' }}</p>
+                    </div>
+                    
+                    <form method="POST" action="#" id="profileForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ current_user.username }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email if current_user.email else '' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password" placeholder="Enter current password to make changes">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Leave blank to keep current password">
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm new password">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="saveProfile()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="settingsModalLabel">
+                        <i class="fas fa-cog me-2"></i>Settings
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="interface-tab" data-bs-toggle="tab" data-bs-target="#interface" type="button" role="tab" aria-controls="interface" aria-selected="true">Interface</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab" aria-controls="notifications" aria-selected="false">Notifications</button>
+                        </li>
+                        {% if current_user.is_admin and current_user.is_head_office %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab" aria-controls="users" aria-selected="false">User Management</button>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <div class="tab-content p-3" id="settingsTabContent">
+                        <div class="tab-pane fade show active" id="interface" role="tabpanel" aria-labelledby="interface-tab">
+                            <form id="interfaceSettingsForm">
+                                <div class="row mb-3">
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Color Theme</label>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                                            <label class="form-check-label" for="darkModeToggle">Dark Mode</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Sidebar</label>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="collapsedSidebarToggle">
+                                            <label class="form-check-label" for="collapsedSidebarToggle">Collapsed by default</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="itemsPerPage" class="form-label">Items per page</label>
+                                        <select class="form-select" id="itemsPerPage">
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-lg-4">
+                                        <label for="defaultView" class="form-label">Default View</label>
+                                        <select class="form-select" id="defaultView">
+                                            <option value="table">Table</option>
+                                            <option value="grid">Grid</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+                            <form id="notificationsPopupSettingsForm">
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <h6>Email Notifications</h6>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox" id="emailGlobalToggle">
+                                            <label class="form-check-label" for="emailGlobalToggle">Enable All Email Notifications</label>
+                                        </div>
+                                        <div class="ms-4">
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input email-notification-toggle" type="checkbox" id="emailNewLettersToggle" disabled>
+                                                <label class="form-check-label" for="emailNewLettersToggle">New Letters</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input email-notification-toggle" type="checkbox" id="emailStatusChangesToggle" disabled>
+                                        <label class="form-check-label" for="emailStatusChangesToggle">Status Changes</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input email-notification-toggle" type="checkbox" id="emailDueDatesToggle" disabled>
+                                        <label class="form-check-label" for="emailDueDatesToggle">Due Date Reminders</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input email-notification-toggle" type="checkbox" id="emailProjectUpdatesToggle" disabled>
+                                        <label class="form-check-label" for="emailProjectUpdatesToggle">Project Updates</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <h6>Browser Notifications</h6>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="browserGlobalToggle">
+                                    <label class="form-check-label" for="browserGlobalToggle">Enable All Browser Notifications</label>
+                                </div>
+                                <div class="ms-4">
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input browser-notification-toggle" type="checkbox" id="browserNewLettersToggle" disabled>
+                                        <label class="form-check-label" for="browserNewLettersToggle">New Letters</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input browser-notification-toggle" type="checkbox" id="browserStatusChangesToggle" disabled>
+                                        <label class="form-check-label" for="browserStatusChangesToggle">Status Changes</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input browser-notification-toggle" type="checkbox" id="browserDueDatesToggle" disabled>
+                                        <label class="form-check-label" for="browserDueDatesToggle">Due Date Reminders</label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input browser-notification-toggle" type="checkbox" id="browserProjectUpdatesToggle" disabled>
+                                        <label class="form-check-label" for="browserProjectUpdatesToggle">Project Updates</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <h6>Email Configuration</h6>
+                                <div class="mb-3">
+                                    <label for="emailFrequency" class="form-label">Email Frequency</label>
+                                    <select class="form-select form-select-sm" id="emailFrequency">
+                                        <option value="immediate">Send Immediately</option>
+                                        <option value="daily">Daily Digest</option>
+                                        <option value="weekly">Weekly Digest</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveNotificationSettingsBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/database-utils.js') }}"></script>
+    
+    <!-- Database Backup/Restore Modal -->
+    <div class="modal fade" id="databaseUtilitiesModal" tabindex="-1" aria-labelledby="databaseUtilitiesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="databaseUtilitiesModalLabel"><i class="fas fa-database me-2"></i>Database Utilities</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="databaseTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="backup-tab" data-bs-toggle="tab" data-bs-target="#backup-tab-pane" type="button" role="tab" aria-controls="backup-tab-pane" aria-selected="true">Backup</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="restore-tab" data-bs-toggle="tab" data-bs-target="#restore-tab-pane" type="button" role="tab" aria-controls="restore-tab-pane" aria-selected="false">Restore</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="backups-list-tab" data-bs-toggle="tab" data-bs-target="#backups-list-tab-pane" type="button" role="tab" aria-controls="backups-list-tab-pane" aria-selected="false">Previous Backups</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-3" id="databaseTabsContent">
+                        <!-- Backup Tab -->
+                        <div class="tab-pane fade show active" id="backup-tab-pane" role="tabpanel" aria-labelledby="backup-tab" tabindex="0">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i> Create a backup of the current database. This will allow you to restore the system to this state if needed.
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="button" class="btn btn-primary" id="createBackupBtn">
+                                    <i class="fas fa-download me-2"></i> Create Database Backup
+                                </button>
+                            </div>
+                            <div id="backupResult" class="mt-4"></div>
+                        </div>
+                        
+                        <!-- Restore Tab -->
+                        <div class="tab-pane fade" id="restore-tab-pane" role="tabpanel" aria-labelledby="restore-tab" tabindex="0">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i> <strong>Warning:</strong> Restoring a backup will overwrite the current database. Make sure you have a backup of the current state before proceeding.
+                            </div>
+                            <form id="restoreForm" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="modalBackupFile" class="form-label">Select Backup File (.db)</label>
+                                    <input class="form-control" type="file" id="modalBackupFile" name="backup_file" accept=".db">
+                                </div>
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-danger" id="restoreBackupBtn">
+                                        <i class="fas fa-upload me-2"></i> Restore Database
+                                    </button>
+                                </div>
+                            </form>
+                            <div id="restoreResult" class="mt-4"></div>
+                        </div>
+                        
+                        <!-- Previous Backups Tab -->
+                        <div class="tab-pane fade" id="backups-list-tab-pane" role="tabpanel" aria-labelledby="backups-list-tab" tabindex="0">
+                            <div id="backupsList" class="list-group mt-3">
+                                <div class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Loading backups...</p>
+                                </div>
+                            </div>
+                            <div id="noBackupsMessage" class="alert alert-info mt-3 d-none">
+                                <i class="fas fa-info-circle me-2"></i> No backups found. Create a backup first.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- User Profile Modal -->
+    <div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userProfileModalLabel">User Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add your user profile content here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Basic UI Functions -->
+    <script>
+    // Simple function to toggle an element's visibility by class
+    function toggleElementVisibility(elementId) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.classList.toggle('show');
+        }
+    }
+    
+    // Function to open modals
+    function openModal(modalId) {
+        const modalElement = document.getElementById(modalId);
+        if (modalElement) {
+            const modalInstance = new bootstrap.Modal(modalElement);
+            modalInstance.show();
+        }
+    }
+    
+    // User profile and settings functions
+    function openProfile() {
+        openModal('profileModal');
+    }
+    
+    function openSettings() {
+        openModal('settingsModal');
+    }
+    
+    function openNotificationsSettings() {
+        openModal('notificationsSettingsModal');
+    }
+    
+    // Initialize dropdown toggles
+    document.addEventListener('DOMContentLoaded', function() {
+        // Notification toggle
+        const notificationsToggleBtn = document.getElementById('notificationsToggleBtn');
+        const notificationsMenu = document.getElementById('notificationsMenu');
+        
+        if (notificationsToggleBtn) {
+            notificationsToggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleElementVisibility('notificationsMenu');
+            });
+        }
+        
+        // User dropdown toggle
+        const userDropdownToggleBtn = document.getElementById('userDropdownToggleBtn');
+        const userDropdownMenu = document.getElementById('userDropdownMenu');
+        
+        if (userDropdownToggleBtn) {
+            userDropdownToggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleElementVisibility('userDropdownMenu');
+            });
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            // Close notifications dropdown if open and clicked outside
+            if (notificationsMenu && 
+                notificationsMenu.classList.contains('show') && 
+                !notificationsToggleBtn.contains(e.target) && 
+                !notificationsMenu.contains(e.target)) {
+                notificationsMenu.classList.remove('show');
+            }
+            
+            // Close user dropdown if open and clicked outside
+            if (userDropdownMenu && 
+                userDropdownMenu.classList.contains('show') && 
+                !userDropdownToggleBtn.contains(e.target) && 
+                !userDropdownMenu.contains(e.target)) {
+                userDropdownMenu.classList.remove('show');
+            }
+        });
+    });
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        // Sidebar toggle functionality
+        const sidebarToggler = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        
+        if (sidebarToggler) {
+            sidebarToggler.addEventListener('click', function() {
+                document.body.classList.toggle('collapsed-sidebar');
+                
+                if (document.body.classList.contains('collapsed-sidebar')) {
+                    document.getElementById('toggleIcon').classList.remove('fa-chevron-left');
+                    document.getElementById('toggleIcon').classList.add('fa-chevron-right');
+                } else {
+                    document.getElementById('toggleIcon').classList.remove('fa-chevron-right');
+                    document.getElementById('toggleIcon').classList.add('fa-chevron-left');
+                }
+                
+                // Store the preference
+                localStorage.setItem('sidebarCollapsed', document.body.classList.contains('collapsed-sidebar'));
+            });
+        }
+        
+        // Check if the sidebar was collapsed in previous session
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.body.classList.add('collapsed-sidebar');
+            document.getElementById('toggleIcon').classList.remove('fa-chevron-left');
+            document.getElementById('toggleIcon').classList.add('fa-chevron-right');
+        }
+        
+        // Mobile menu toggle
+        const mobileMenuToggler = document.getElementById('mobileMenuToggle');
+        if (mobileMenuToggler) {
+            mobileMenuToggler.addEventListener('click', function() {
+                document.body.classList.toggle('mobile-menu-open');
+            });
+        }
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (document.body.classList.contains('mobile-menu-open') && 
+                !sidebar.contains(event.target) && 
+                event.target !== mobileMenuToggler) {
+                document.body.classList.remove('mobile-menu-open');
+            }
+        });
+        
+        // User dropdown toggle
+        const userDropdownToggle = document.getElementById('userDropdownToggle');
+        const userDropdownMenu = document.getElementById('userDropdownMenu');
+        
+        if (userDropdownToggle && userDropdownMenu) {
+            userDropdownToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                userDropdownMenu.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!userDropdownToggle.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                    userDropdownMenu.classList.remove('show');
+                }
+            });
+        }
+        
+        // Profile and settings modals
+        const profileLink = document.getElementById('profileLink');
+        const settingsLink = document.getElementById('settingsLink');
+        const userProfileLink = document.getElementById('userProfileLink');
+        const userSettingsLink = document.getElementById('userSettingsLink');
+        const utilitiesLink = document.getElementById('utilitiesLink');
+        
+        // Function to open modal
+        function openModal(modalId) {
+            const modalElement = document.getElementById(modalId);
+            if (modalElement) {
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }
+        }
+        
+        // Attach event listeners to profile links
+        if (profileLink) {
+            profileLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                openModal('profileModal');
+            });
+        }
+        
+        if (settingsLink) {
+            settingsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                openModal('settingsModal');
+            });
+        }
+        
+        if (userProfileLink) {
+            userProfileLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                userDropdownMenu.classList.remove('show');
+                openModal('profileModal');
+            });
+        }
+        
+        if (userSettingsLink) {
+            userSettingsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                userDropdownMenu.classList.remove('show');
+                openModal('settingsModal');
+            });
+        }
+        
+        // Password update form handling
+        const profileForm = document.getElementById('profileForm');
+        if (profileForm) {
+            document.querySelector('.btn-primary[onclick="saveProfile()"]').addEventListener('click', function() {
+                // Get form data
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const currentPassword = document.getElementById('current_password').value;
+                const newPassword = document.getElementById('new_password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+                
+                // Validate form
+                if (!username || !email) {
+                    showAlert('danger', 'Username and email are required');
+                    return;
+                }
+                
+                // Password validation
+                if (newPassword) {
+                    if (!currentPassword) {
+                        showAlert('danger', 'Current password is required to set a new password');
+                        return;
+                    }
+                    
+                    if (newPassword !== confirmPassword) {
+                        showAlert('danger', 'New passwords do not match');
+                        return;
+                    }
+                    
+                    if (newPassword.length < 8) {
+                        showAlert('danger', 'Password must be at least 8 characters');
+                        return;
+                    }
+                }
+                
+                // Reset form fields
+                document.getElementById('current_password').value = '';
+                document.getElementById('new_password').value = '';
+                document.getElementById('confirm_password').value = '';
+                
+                // Close modal and show success message
+                bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
+                showAlert('success', 'Profile updated successfully!');
+            });
+        }
+        
+        // Settings functionality
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        if (saveSettingsBtn) {
+            // Load saved settings when the modal is opened
+            document.getElementById('settingsModal').addEventListener('show.bs.modal', function () {
+                // Load settings from localStorage
+                const settings = JSON.parse(localStorage.getItem('letterRegistrySettings') || '{}');
+                
+                // Interface settings
+                document.getElementById('darkModeToggle').checked = settings.darkMode || false;
+                document.getElementById('collapsedSidebarToggle').checked = settings.compactSidebar !== false; // Default to true
+                document.getElementById('itemsPerPage').value = settings.itemsPerPage || '25';
+                document.getElementById('defaultView').value = settings.defaultView || 'table';
+                
+                // Notification settings
+                document.getElementById('emailNotifications').checked = settings.emailNotifications !== false; // Default to true
+                document.getElementById('emailNewLetterToggle').checked = settings.emailNewLetter !== false; // Default to true
+                document.getElementById('emailLetterStatusToggle').checked = settings.emailLetterStatus !== false; // Default to true
+                document.getElementById('emailReminderToggle').checked = settings.emailReminder !== false; // Default to true
+                
+                document.getElementById('desktopNotifications').checked = settings.desktopNotifications !== false; // Default to true
+                document.getElementById('desktopNewLetterToggle').checked = settings.desktopNewLetter !== false; // Default to true
+                document.getElementById('desktopLetterStatusToggle').checked = settings.desktopLetterStatus !== false; // Default to true
+                document.getElementById('desktopReminderToggle').checked = settings.desktopReminder !== false; // Default to true
+                
+                // Update toggle states
+                updateEmailToggleStates();
+                updateDesktopToggleStates();
+            });
+            
+            // Add event listeners for main notification toggles
+            const emailToggle = document.getElementById('emailNotifications');
+            const desktopToggle = document.getElementById('desktopNotifications');
+            
+            emailToggle.addEventListener('change', updateEmailToggleStates);
+            desktopToggle.addEventListener('change', updateDesktopToggleStates);
+            
+            function updateEmailToggleStates() {
+                const enabled = emailToggle.checked;
+                document.getElementById('emailNewLetterToggle').disabled = !enabled;
+                document.getElementById('emailLetterStatusToggle').disabled = !enabled;
+                document.getElementById('emailReminderToggle').disabled = !enabled;
+            }
+            
+            function updateDesktopToggleStates() {
+                const enabled = desktopToggle.checked;
+                document.getElementById('desktopNewLetterToggle').disabled = !enabled;
+                document.getElementById('desktopLetterStatusToggle').disabled = !enabled;
+                document.getElementById('desktopReminderToggle').disabled = !enabled;
+            }
+            
+            saveSettingsBtn.addEventListener('click', function() {
+                // Get form data from interface settings
+                const darkMode = document.getElementById('darkModeToggle').checked;
+                const compactSidebar = document.getElementById('collapsedSidebarToggle').checked;
+                const itemsPerPage = document.getElementById('itemsPerPage').value;
+                const defaultView = document.getElementById('defaultView').value;
+                
+                // Get form data from notification settings
+                const emailNotifications = document.getElementById('emailNotifications').checked;
+                const emailNewLetter = document.getElementById('emailNewLetterToggle').checked;
+                const emailLetterStatus = document.getElementById('emailLetterStatusToggle').checked;
+                const emailReminder = document.getElementById('emailReminderToggle').checked;
+                
+                const desktopNotifications = document.getElementById('desktopNotifications').checked;
+                const desktopNewLetter = document.getElementById('desktopNewLetterToggle').checked;
+                const desktopLetterStatus = document.getElementById('desktopLetterStatusToggle').checked;
+                const desktopReminder = document.getElementById('desktopReminderToggle').checked;
+                
+                // Apply dark mode immediately
+                if (darkMode) {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+                
+                // Apply sidebar setting immediately
+                if (compactSidebar) {
+                    document.body.classList.add('collapsed-sidebar');
+                    document.getElementById('toggleIcon').classList.remove('fa-chevron-left');
+                    document.getElementById('toggleIcon').classList.add('fa-chevron-right');
+                } else {
+                    document.body.classList.remove('collapsed-sidebar');
+                    document.getElementById('toggleIcon').classList.remove('fa-chevron-right');
+                    document.getElementById('toggleIcon').classList.add('fa-chevron-left');
+                }
+                
+                // Save settings to localStorage
+                const settings = {
+                    darkMode,
+                    compactSidebar,
+                    emailNotifications,
+                    emailNewLetter,
+                    emailLetterStatus,
+                    emailReminder,
+                    desktopNotifications,
+                    desktopNewLetter,
+                    desktopLetterStatus,
+                    desktopReminder,
+                    itemsPerPage,
+                    defaultView
+                };
+                
+                localStorage.setItem('letterRegistrySettings', JSON.stringify(settings));
+                
+                // Close modal and show success message
+                bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
+                showAlert('success', 'Settings saved successfully!');
+            });
+        }
+        
+        // Helper function to show alerts (available to all users)
+        function showAlert(type, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+            alertDiv.setAttribute('role', 'alert');
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // Insert at the top of the content area
+            const contentArea = document.querySelector('.content');
+            if (contentArea) {
+                contentArea.insertBefore(alertDiv, contentArea.firstChild);
+                
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alertDiv);
+                    bsAlert.close();
+                }, 5000);
+            }
+        }
+        
+        // User Management Functionality - Only runs if user is head office admin
+        const isHeadOfficeAdmin = document.body.dataset.isAdmin === 'true' && 
+                                document.body.dataset.isHeadOffice === 'true';
+                                
+        if (isHeadOfficeAdmin && document.querySelector('.nav-item[role="presentation"] #users-tab')) {
+            // User management related elements
+            const usersTab = document.getElementById('users-tab');
+            const addUserBtn = document.getElementById('addUserBtn');
+            const saveNewUserBtn = document.getElementById('saveNewUserBtn');
+            const saveEditUserBtn = document.getElementById('saveEditUserBtn');
+            const confirmDeleteUserBtn = document.getElementById('confirmDeleteUserBtn');
+            const currentUserId = document.querySelector('.user-dropdown-toggle').dataset.userId;
+            
+            // Modals initialization
+            let addUserModal, editUserModal, deleteUserModal;
+            
+            if (document.getElementById('addUserModal')) {
+                addUserModal = new bootstrap.Modal(document.getElementById('addUserModal'));
+            }
+            
+            if (document.getElementById('editUserModal')) {
+                editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            }
+            
+            if (document.getElementById('deleteUserModal')) {
+                deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+            }
+            
+            // Load users when tab is clicked
+            if (usersTab) {
+                usersTab.addEventListener('click', function() {
+                    loadUsers();
+                    loadProjects();
+                });
+            }
+            
+            // Function to load projects
+            function loadProjects() {
+                // Get the project dropdowns
+                const newProjectId = document.getElementById('newProjectId');
+                const editProjectId = document.getElementById('editProjectId');
+                
+                if (!newProjectId || !editProjectId) return;
+                
+                // Clear existing options
+                newProjectId.innerHTML = '<option value="" selected disabled>Select project</option>';
+                editProjectId.innerHTML = '<option value="" disabled>Select project</option>';
+                
+                // Fetch projects from API
+                fetch('/api/projects', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.projects && data.projects.length > 0) {
+                        // Add project options
+                        data.projects.forEach(project => {
+                            // Add to new user dropdown
+                            const newOption = document.createElement('option');
+                            newOption.value = project.id;
+                            newOption.textContent = `${project.project_code} - ${project.name}`;
+                            newProjectId.appendChild(newOption);
+                            
+                            // Add to edit user dropdown
+                            const editOption = document.createElement('option');
+                            editOption.value = project.id;
+                            editOption.textContent = `${project.project_code} - ${project.name}`;
+                            editProjectId.appendChild(editOption);
+                        });
+                    } else {
+                        // No projects found
+                        console.error('No projects found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading projects:', error);
+                });
+            }
+            
+            // Add user button
+            if (addUserBtn) {
+                addUserBtn.addEventListener('click', function() {
+                    // Clear form
+                    document.getElementById('addUserForm').reset();
+                    // Clear error messages
+                    document.getElementById('usernameError').textContent = '';
+                    document.getElementById('emailError').textContent = '';
+                    document.getElementById('passwordError').textContent = '';
+                    
+                    // Show modal
+                    addUserModal.show();
+                });
+            }
+            
+            // Save new user
+            if (saveNewUserBtn) {
+                saveNewUserBtn.addEventListener('click', function() {
+                    // Get form values
+                    const username = document.getElementById('newUsername').value.trim();
+                    const email = document.getElementById('newEmail').value.trim();
+                    const password = document.getElementById('newPassword').value;
+                    const projectId = document.getElementById('newProjectId').value;
+                    const isAdmin = document.getElementById('newUserType').value === 'admin';
+                    const isActive = document.getElementById('newIsActive').checked;
+                    
+                    // Basic validation
+                    if (!username || !email || !password || !projectId) {
+                        showAlert('error', 'Please fill in all required fields');
+                        return;
+                    }
+                    
+                    // Create user data
+                    const userData = {
+                        username: username,
+                        email: email,
+                        password: password,
+                        project_id: projectId,
+                        is_admin: isAdmin,
+                        is_active: isActive
+                    };
+                    
+                    // Send request to create user
+                    fetch('/api/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(userData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Close modal and refresh user list
+                            addUserModal.hide();
+                            showAlert('success', 'User created successfully');
+                            loadUsersList();
+                            
+                            // Clear form
+                            document.getElementById('newUsername').value = '';
+                            document.getElementById('newEmail').value = '';
+                            document.getElementById('newPassword').value = '';
+                            document.getElementById('newProjectId').selectedIndex = 0;
+                            document.getElementById('newIsActive').checked = true;
+                        } else {
+                            // Show error
+                            if (data.message.includes('Username')) {
+                                document.getElementById('usernameError').textContent = data.message;
+                            } else if (data.message.includes('Email')) {
+                                document.getElementById('emailError').textContent = data.message;
+                            } else if (data.message.includes('Password')) {
+                                document.getElementById('passwordError').textContent = data.message;
+                            } else {
+                                showAlert('error', data.message);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error creating user:', error);
+                        showAlert('error', 'An error occurred while creating the user');
+                    });
+                });
+            }
+            
+            // Handle user list actions (edit/delete)
+            const usersList = document.getElementById('usersList');
+            if (usersList) {
+                usersList.addEventListener('click', function(event) {
+                    const target = event.target;
+                    
+                    // Check if edit button was clicked
+                    if (target.classList.contains('edit-user-btn') || target.closest('.edit-user-btn')) {
+                        const btn = target.classList.contains('edit-user-btn') ? target : target.closest('.edit-user-btn');
+                        const userId = btn.dataset.userId;
+                        
+                        // Get user data and populate form
+                        fetch(`/api/users/${userId}`, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.user) {
+                                // Populate form
+                                document.getElementById('editUserId').value = data.user.id;
+                                document.getElementById('editUsername').value = data.user.username;
+                                document.getElementById('editEmail').value = data.user.email;
+                                document.getElementById('editPassword').value = '';
+                                document.getElementById('editIsAdmin').checked = data.user.is_admin;
+                                document.getElementById('editIsActive').checked = data.user.is_active;
+                                
+                                // Clear error messages
+                                document.getElementById('editEmailError').textContent = '';
+                                document.getElementById('editPasswordError').textContent = '';
+                                
+                                // Show modal
+                                editUserModal.show();
+                            } else {
+                                showAlert('error', 'Failed to load user data');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading user:', error);
+                            showAlert('error', 'An error occurred while loading the user');
+                        });
+                    }
+                    
+                    // Check if delete button was clicked
+                    if (target.classList.contains('delete-user-btn') || target.closest('.delete-user-btn')) {
+                        const btn = target.classList.contains('delete-user-btn') ? target : target.closest('.delete-user-btn');
+                        const userId = btn.dataset.userId;
+                        const username = btn.dataset.username;
+                        
+                        // Set user ID and name in delete modal
+                        document.getElementById('deleteUserId').value = userId;
+                        document.getElementById('deleteUserName').textContent = username;
+                        
+                        // Show delete modal
+                        deleteUserModal.show();
+                    }
+                });
+            }
+            
+            // Save edited user
+            if (saveEditUserBtn) {
+                saveEditUserBtn.addEventListener('click', function() {
+                    // Get form values
+                    const userId = document.getElementById('editUserId').value;
+                    const email = document.getElementById('editEmail').value.trim();
+                    const password = document.getElementById('editPassword').value;
+                    const projectId = document.getElementById('editProjectId').value;
+                    const isAdmin = document.getElementById('editIsAdmin').checked;
+                    const isActive = document.getElementById('editIsActive').checked;
+                    
+                    // Basic validation
+                    if (!email || !projectId) {
+                        showAlert('error', 'Please fill in all required fields');
+                        return;
+                    }
+                    
+                    // Create user data
+                    const userData = {
+                        email: email,
+                        project_id: projectId,
+                        is_admin: isAdmin,
+                        is_active: isActive
+                    };
+                    
+                    // Add password if provided
+                    if (password) {
+                        userData.password = password;
+                    }
+                    
+                    // Send request to update user
+                    fetch(`/api/users/${userId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(userData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message && !data.error) {
+                            // Close modal and refresh user list
+                            editUserModal.hide();
+                            showAlert('success', data.message);
+                            loadUsersList();
+                        } else {
+                            // Show error
+                            showAlert('error', data.error || 'Failed to update user');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating user:', error);
+                        showAlert('error', 'An error occurred while updating the user');
+                    });
+                });
+            }
+            
+            // Confirm delete user
+            if (confirmDeleteUserBtn) {
+                confirmDeleteUserBtn.addEventListener('click', function() {
+                    const userId = document.getElementById('deleteUserId').value;
+                    
+                    // Delete user via API
+                    fetch(`/api/users/${userId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Show success message
+                            showAlert('success', data.message);
+                            // Close modal
+                            deleteUserModal.hide();
+                            // Reload users
+                            loadUsers();
+                        } else {
+                            // Show error message
+                            showAlert('error', data.message);
+                            // Close modal
+                            deleteUserModal.hide();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting user:', error);
+                        showAlert('error', 'An error occurred while deleting the user');
+                        // Close modal
+                        deleteUserModal.hide();
+                    });
+                });
+            }
+            
+            // Load users function
+            function loadUsers() {
+                const usersList = document.getElementById('usersList');
+                if (!usersList) return;
+                
+                usersList.innerHTML = '<tr><td colspan="6" class="text-center">Loading users...</td></tr>';
+                
+                fetch('/api/users', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.users && data.users.length > 0) {
+                        // Clear loading indicator
+                        usersList.innerHTML = '';
+                        
+                        // Add user rows
+                        data.users.forEach(user => {
+                            const row = document.createElement('tr');
+                            
+                            // Username
+                            const usernameCell = document.createElement('td');
+                            usernameCell.textContent = user.username;
+                            row.appendChild(usernameCell);
+                            
+                            // Email
+                            const emailCell = document.createElement('td');
+                            emailCell.textContent = user.email;
+                            row.appendChild(emailCell);
+                            
+                            // Role
+                            const roleCell = document.createElement('td');
+                            const roleBadge = document.createElement('span');
+                            let roleClass = 'bg-secondary';
+                            let roleText = 'User';
+                            
+                            if (user.is_head_office && user.is_admin) {
+                                roleClass = 'bg-danger';
+                                roleText = 'Head Office Admin';
+                            } else if (user.is_head_office && !user.is_admin) {
+                                roleClass = 'bg-info';
+                                roleText = 'Head Office User';
+                            } else if (!user.is_head_office && user.is_admin) {
+                                roleClass = 'bg-warning';
+                                roleText = 'Project Admin';
+                            } else {
+                                roleClass = 'bg-secondary';
+                                roleText = 'Project User';
+                            }
+                            
+                            roleBadge.className = `badge ${roleClass}`;
+                            roleBadge.textContent = roleText;
+                            roleCell.appendChild(roleBadge);
+                            row.appendChild(roleCell);
+                            
+                            // Status
+                            const statusCell = document.createElement('td');
+                            const statusBadge = document.createElement('span');
+                            statusBadge.className = `badge ${user.is_active ? 'bg-success' : 'bg-warning'}`;
+                            statusBadge.textContent = user.is_active ? 'Active' : 'Inactive';
+                            statusCell.appendChild(statusBadge);
+                            row.appendChild(statusCell);
+                            
+                            // Created
+                            const createdCell = document.createElement('td');
+                            createdCell.textContent = user.created_at;
+                            row.appendChild(createdCell);
+                            
+                            // Actions
+                            const actionsCell = document.createElement('td');
+                            
+                            // Only allow editing other users or yourself
+                            const editBtn = document.createElement('button');
+                            editBtn.className = 'btn btn-sm btn-outline-primary me-1 edit-user-btn';
+                            editBtn.dataset.userId = user.id;
+                            editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                            editBtn.title = 'Edit User';
+                            actionsCell.appendChild(editBtn);
+                            
+                            // Only allow deleting other users
+                            if (user.id != currentUserId) {
+                                const deleteBtn = document.createElement('button');
+                                deleteBtn.className = 'btn btn-sm btn-outline-danger delete-user-btn';
+                                deleteBtn.dataset.userId = user.id;
+                                deleteBtn.dataset.username = user.username;
+                                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                                deleteBtn.title = 'Delete User';
+                                actionsCell.appendChild(deleteBtn);
+                            }
+                            
+                            row.appendChild(actionsCell);
+                            
+                            // Add row to table
+                            usersList.appendChild(row);
+                        });
+                    } else {
+                        usersList.innerHTML = '<tr><td colspan="6" class="text-center">No users found</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading users:', error);
+                    usersList.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading users</td></tr>';
+                });
+            }
+        }
+        
+        // Notifications functionality
+        const notificationsToggleBtn = document.getElementById('notificationsToggleBtn');
+        const notificationsMenu = document.getElementById('notificationsMenu');
+        const notificationsList = document.getElementById('notificationsList');
+        const notificationBadge = document.querySelector('.notification-badge');
+        const markAllReadBtn = document.querySelector('.mark-all-read');
+        const clearAllNotificationsBtn = document.querySelector('.clear-all-notifications');
+        
+        // Function to fetch notifications
+        async function fetchNotifications() {
+            try {
+                const response = await fetch('/api/notifications');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch notifications');
+                }
+                const data = await response.json();
+                
+                // Update the notification counter
+                const counter = document.getElementById('notification-counter');
+                if (counter) {
+                    if (data.unreadCount > 0) {
+                        counter.textContent = data.unreadCount;
+                        counter.style.display = 'flex';
+                        counter.classList.add('has-new');
+                    } else {
+                        counter.textContent = '0';
+                        counter.style.display = 'none';
+                        counter.classList.remove('has-new');
+                    }
+                }
+                
+                // Return notifications for rendering
+                return data.notifications;
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+                return [];
+            }
+        }
+        
+        // Function to render notifications
+        async function renderNotifications() {
+            const container = document.getElementById('notifications-container');
+            const noNotifications = document.getElementById('no-notifications');
+            
+            if (!container) return;
+            
+            try {
+                const response = await fetch('/api/notifications');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch notifications');
+                }
+                const data = await response.json();
+                const notifications = data.notifications;
+                
+                container.innerHTML = '';
+                
+                if (!notifications || notifications.length === 0) {
+                    noNotifications.style.display = 'block';
+                    return;
+                }
+                
+                noNotifications.style.display = 'none';
+                
+                notifications.forEach(notification => {
+                    const notificationElement = document.createElement('div');
+                    notificationElement.className = `notification-item p-2 border-bottom ${notification.read ? '' : 'bg-light'}`;
+                    notificationElement.innerHTML = `
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas ${notification.icon || 'fa-bell'} fa-lg" style="color: ${notification.icon_color || '#007bff'}"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong class="mb-1">${notification.title || 'Notification'}</strong>
+                                    <small class="text-muted">${formatTimeAgo(notification.created_at)}</small>
+                                </div>
+                                <p class="mb-0 text-muted">${notification.message || ''}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    if (notification.link) {
+                        notificationElement.style.cursor = 'pointer';
+                        notificationElement.onclick = () => {
+                            markNotificationRead(notification.id);
+                            window.location.href = notification.link;
+                        };
+                    }
+                    
+                    container.appendChild(notificationElement);
+                });
+                
+                // Update the notification counter
+                const counter = document.getElementById('notification-counter');
+                if (counter) {
+                    if (data.unreadCount > 0) {
+                        counter.textContent = data.unreadCount;
+                        counter.style.display = 'flex';
+                        counter.classList.add('has-new');
+                    } else {
+                        counter.textContent = '0';
+                        counter.style.display = 'none';
+                        counter.classList.remove('has-new');
+                    }
+                }
+            } catch (error) {
+                console.error('Error rendering notifications:', error);
+                noNotifications.style.display = 'block';
+            }
+        }
+        
+        // Initialize notifications when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            renderNotifications();
+            // Update notifications every 30 seconds
+            setInterval(renderNotifications, 30000);
+        });
+        
+        // Mark a notification as read
+        async function markAsRead(notificationId) {
+            try {
+                const response = await fetch(`/api/notifications/mark-read/${notificationId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to mark notification as read');
+                }
+                
+                // Refresh notifications to update unread count
+                await renderNotifications();
+                
+                return true;
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+                return false;
+            }
+        }
+        
+        // Mark all notifications as read
+        async function markAllAsRead() {
+            try {
+                const response = await fetch('/api/notifications/mark-all-read', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to mark all notifications as read');
+                }
+                
+                // Refresh notifications to update UI
+                await renderNotifications();
+                
+                return true;
+            } catch (error) {
+                console.error('Error marking all notifications as read:', error);
+                return false;
+            }
+        }
+        
+        // Clear all notifications
+        async function clearAllNotifications() {
+            try {
+                const response = await fetch('/api/notifications/clear-all', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to clear notifications');
+                }
+                
+                // Refresh notifications to update UI
+                await renderNotifications();
+                
+                return true;
+            } catch (error) {
+                console.error('Error clearing notifications:', error);
+                return false;
+            }
+        }
+        
+        if (notificationsToggleBtn) {
+            // Toggle notifications menu
+            notificationsToggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                notificationsMenu.classList.toggle('show');
+                renderNotifications();
+            });
+            
+            // Close notifications when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!notificationsToggleBtn.contains(e.target) && !notificationsMenu.contains(e.target)) {
+                    notificationsMenu.classList.remove('show');
+                }
+            });
+        }
+        
+        if (markAllReadBtn) {
+            // Mark all as read
+            markAllReadBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const originalText = this.textContent;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Processing...';
+                this.style.pointerEvents = 'none';
+                
+                // Call API to mark all as read
+                const success = await markAllAsRead();
+                
+                // Reset button state
+                this.textContent = originalText;
+                this.style.pointerEvents = 'auto';
+                
+                if (success) {
+                    // Provide visual feedback
+                    const noNotificationsMsg = document.createElement('div');
+                    noNotificationsMsg.className = 'alert alert-success p-2 m-2';
+                    noNotificationsMsg.textContent = 'All notifications marked as read';
+                    notificationsList.prepend(noNotificationsMsg);
+                    
+                    // Remove the message after 3 seconds
+                    setTimeout(() => {
+                        if (noNotificationsMsg.parentNode) {
+                            noNotificationsMsg.remove();
+                        }
+                    }, 3000);
+                }
+            });
+        }
+        
+        if (clearAllNotificationsBtn) {
+            // Clear all notifications
+            clearAllNotificationsBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                // Confirm before clearing
+                if (!confirm('Are you sure you want to clear all notifications? This cannot be undone.')) {
+                    return;
+                }
+                
+                // Show loading state
+                const originalText = this.textContent;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Processing...';
+                this.style.pointerEvents = 'none';
+                
+                // Call API to clear all notifications
+                const success = await clearAllNotifications();
+                
+                // Reset button state
+                this.textContent = originalText;
+                this.style.pointerEvents = 'auto';
+                
+                if (success) {
+                    // Provide visual feedback
+                    const noNotificationsMsg = document.createElement('div');
+                    noNotificationsMsg.className = 'alert alert-success p-2 m-2';
+                    noNotificationsMsg.textContent = 'All notifications cleared';
+                    notificationsList.prepend(noNotificationsMsg);
+                    
+                    // Remove the message after 3 seconds
+                    setTimeout(() => {
+                        if (noNotificationsMsg.parentNode) {
+                            noNotificationsMsg.remove();
+                        }
+                    }, 3000);
+                    
+                    // Close the dropdown after a short delay
+                    setTimeout(() => {
+                        notificationsMenu.classList.remove('show');
+                    }, 1500);
+                }
+            });
+        }
+    });
+    </script>
+    
+    <!-- User Type Selection Script -->
+    <script>
+        // Function to handle user type selection in add user modal
+        function selectNewUserType(type) {
+            // Update hidden input
+            document.getElementById('newUserType').value = type;
+            
+            // Update card styling
+            const regularCard = document.getElementById('newRegularUserCard');
+            const adminCard = document.getElementById('newAdminUserCard');
+            
+            if (type === 'regular') {
+                regularCard.classList.add('border-primary', 'border-2');
+                adminCard.classList.remove('border-primary', 'border-2');
+            } else if (type === 'admin') {
+                adminCard.classList.add('border-primary', 'border-2');
+                regularCard.classList.remove('border-primary', 'border-2');
+            }
+        }
+    </script>
+    
+    {% block scripts %}{% endblock %}
+    
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Theme Persistence Script -->
+    <script>
+        // Load and apply settings from localStorage when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load settings from localStorage
+            const settings = JSON.parse(localStorage.getItem('letterRegistrySettings') || '{}');
+            
+            // Apply dark mode if enabled
+            if (settings.darkMode) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+            
+            // Apply sidebar setting if enabled
+            if (settings.compactSidebar) {
+                document.body.classList.add('collapsed-sidebar');
+                const toggleIcon = document.getElementById('toggleIcon');
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-chevron-left');
+                    toggleIcon.classList.add('fa-chevron-right');
+                }
+            }
+        });
+    </script>
+
+    <script>
+    // ... existing code ...
+    async function fetchNotifications() {
+        try {
+            const response = await fetch('/api/notifications');
+            if (!response.ok) {
+                throw new Error('Failed to fetch notifications');
+            }
+            const data = await response.json();
+            
+            // Update the notification counter
+            const counter = document.getElementById('notification-counter');
+            if (counter) {
+                if (data.unreadCount > 0) {
+                    counter.textContent = data.unreadCount;
+                    counter.style.display = 'flex';
+                    counter.classList.add('has-new');
+                } else {
+                    counter.textContent = '0';
+                    counter.style.display = 'none';
+                    counter.classList.remove('has-new');
+                }
+            }
+            
+            // Return notifications for rendering
+            return data.notifications;
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+            return [];
+        }
+    }
+
+    // Add this function to update notification badge from other pages
+    window.updateNotificationBadge = function(count) {
+        const notificationCounter = document.getElementById('notification-counter');
+        const notificationsToggleBtn = document.getElementById('notificationsToggleBtn');
+        
+        if (count > 0) {
+            notificationCounter.textContent = count;
+            notificationCounter.style.display = 'block';
+            notificationsToggleBtn.classList.add('has-notifications');
+        } else {
+            notificationCounter.style.display = 'none';
+            notificationsToggleBtn.classList.remove('has-notifications');
+        }
+    };
+
+    // ... rest of the existing code ...
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize notifications
+        const notificationsList = document.getElementById('notificationsList');
+        if (notificationsList) {
+            renderNotifications();
+        }
+        
+        // Add event listeners for mark all as read and clear all buttons
+        const markAllReadBtn = document.querySelector('.mark-all-read');
+        const clearAllBtn = document.querySelector('.clear-all-notifications');
+        
+        if (markAllReadBtn) {
+            markAllReadBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                if (await markAllAsRead()) {
+                    showToast('Success', 'All notifications marked as read', 'success');
+                }
+            });
+        }
+        
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to clear all notifications? This cannot be undone.')) {
+                    if (await clearAllNotifications()) {
+                        showToast('Success', 'All notifications cleared', 'success');
+                    }
+                }
+            });
+        }
+        
+        // Set up periodic notification updates
+        setInterval(renderNotifications, 30000); // Update every 30 seconds
+    });
+    </script>
+
+    <script>
+    // Function to format time ago
+    function formatTimeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+        
+        let interval = Math.floor(seconds / 31536000);
+        if (interval >= 1) return interval + ' year' + (interval === 1 ? '' : 's') + ' ago';
+        
+        interval = Math.floor(seconds / 2592000);
+        if (interval >= 1) return interval + ' month' + (interval === 1 ? '' : 's') + ' ago';
+        
+        interval = Math.floor(seconds / 86400);
+        if (interval >= 1) return interval + ' day' + (interval === 1 ? '' : 's') + ' ago';
+        
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) return interval + ' hour' + (interval === 1 ? '' : 's') + ' ago';
+        
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) return interval + ' minute' + (interval === 1 ? '' : 's') + ' ago';
+        
+        return 'just now';
+    }
+
+    // Function to render notifications
+    async function renderNotifications() {
+        const notifications = await fetchNotifications();
+        const container = document.getElementById('notifications-container');
+        const noNotifications = document.getElementById('no-notifications');
+        
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (!notifications || notifications.length === 0) {
+            noNotifications.style.display = 'block';
+            return;
+        }
+        
+        noNotifications.style.display = 'none';
+        
+        notifications.forEach(notification => {
+            const notificationElement = document.createElement('div');
+            notificationElement.className = `notification-item p-2 border-bottom ${notification.read ? '' : 'bg-light'}`;
+            notificationElement.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas ${notification.icon || 'fa-bell'} fa-lg" style="color: ${notification.icon_color || '#007bff'}"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong class="mb-1">${notification.title || 'Notification'}</strong>
+                            <small class="text-muted">${formatTimeAgo(notification.created_at)}</small>
+                        </div>
+                        <p class="mb-0 text-muted">${notification.message || ''}</p>
+                    </div>
+                </div>
+            `;
+            
+            if (notification.link) {
+                notificationElement.style.cursor = 'pointer';
+                notificationElement.onclick = () => {
+                    markNotificationRead(notification.id);
+                    window.location.href = notification.link;
+                };
+            }
+            
+            container.appendChild(notificationElement);
+        });
+    }
+
+    // Function to mark a notification as read
+    async function markNotificationRead(notificationId) {
+        try {
+            const response = await fetch(`/api/notifications/${notificationId}/read`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to mark notification as read');
+            }
+            
+            await renderNotifications();
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    }
+
+    // Function to mark all notifications as read
+    async function markAllNotificationsRead() {
+        if (!confirm('Mark all notifications as read?')) return;
+        
+        try {
+            const response = await fetch('/api/notifications/mark-all-read', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to mark all notifications as read');
+            }
+            
+            await renderNotifications();
+            showToast('success', 'All notifications marked as read');
+        } catch (error) {
+            console.error('Error marking all notifications as read:', error);
+            showToast('error', 'Failed to mark all notifications as read');
+        }
+    }
+
+    // Function to clear all notifications
+    async function clearAllNotifications() {
+        if (!confirm('Are you sure you want to clear all notifications? This cannot be undone.')) return;
+        
+        try {
+            const response = await fetch('/api/notifications/clear-all', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to clear notifications');
+            }
+            
+            await renderNotifications();
+            showToast('success', 'All notifications cleared');
+        } catch (error) {
+            console.error('Error clearing notifications:', error);
+            showToast('error', 'Failed to clear notifications');
+        }
+    }
+
+    // Initialize notifications when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        renderNotifications();
+        // Update notifications every 30 seconds
+        setInterval(renderNotifications, 30000);
+    });
+    </script>
+</body>
+</html> 

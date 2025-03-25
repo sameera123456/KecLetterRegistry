@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block title %}Project {{ project.project_code }} - Letter Registry System{% endblock %}
+
+{% block page_heading %}Project {{ project.project_code }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Project Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('projects.list_projects') }}">Projects</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ project.project_code }}</li>
+                </ol>
+            </nav>
+            <h1 class="h2"><i class="fas fa-project-diagram me-2"></i>{{ project.name }}</h1>
+        </div>
+        <div>
+            <a href="{{ url_for('projects.list_projects') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Back to Projects
+            </a>
+            {% if current_user.is_admin and current_user.is_head_office %}
+            <a href="{{ url_for('projects.edit_project', project_id=project.id) }}" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-edit me-1"></i> Edit Project
+            </a>
+            {% if stats.total_letters == 0 %}
+            <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete()">
+                <i class="fas fa-trash me-1"></i> Delete Project
+            </button>
+            {% else %}
+            <button type="button" class="btn btn-outline-danger btn-sm" disabled 
+                title="This project has {{ stats.total_letters }} letters. Delete all letters first.">
+                <i class="fas fa-trash me-1"></i> Delete Project
+            </button>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Project Details -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">Project Details</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">Project Code:</div>
+                        <div class="col-md-9">{{ project.project_code }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">Project Name:</div>
+                        <div class="col-md-9">{{ project.name }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">Description:</div>
+                        <div class="col-md-9">{{ project.description or 'No description provided' }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 fw-bold">Created:</div>
+                        <div class="col-md-9">{{ project.created_at.strftime('%d-%m-%Y %H:%M') }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 fw-bold">Last Updated:</div>
+                        <div class="col-md-9">{{ project.updated_at.strftime('%d-%m-%Y %H:%M') }}</div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="text-muted small">
+                        <i class="fas fa-info-circle me-1"></i>
+                        {% if stats.total_letters > 0 %}
+                        This project has {{ stats.total_letters }} letters and cannot be deleted until all letters are removed.
+                        {% else %}
+                        This project can be deleted using the delete button above.
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Project Statistics -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">Letter Statistics</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6 mb-4">
+                            <div class="card border-left-success h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Total Letters</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_letters }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-envelope fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-6 mb-4">
+                            <div class="card border-left-info h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                Incoming</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.incoming_letters }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-inbox fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="card border-left-warning h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Outgoing</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.outgoing_letters }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-paper-plane fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Project Letters -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Project Letters</h6>
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-primary" id="showAll">All</button>
+                <button type="button" class="btn btn-sm btn-outline-info" id="showIncoming">Incoming</button>
+                <button type="button" class="btn btn-sm btn-outline-warning" id="showOutgoing">Outgoing</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="lettersTable">
+                    <thead>
+                        <tr>
+                            <th>Letter Number</th>
+                            <th>Date</th>
+                            <th>Subject</th>
+                            <th>In Charge</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for letter in letters %}
+                        <tr data-type="{{ 'incoming' if letter.is_incoming else 'outgoing' }}">
+                            <td>{{ letter.letter_number }}</td>
+                            <td>{{ letter.date.strftime('%d-%m-%Y') }}</td>
+                            <td>{{ letter.object_of }}</td>
+                            <td>{{ letter.in_charge }}</td>
+                            <td>
+                                {% if letter.is_incoming %}
+                                <span class="badge bg-info">Incoming</span>
+                                {% else %}
+                                <span class="badge bg-warning">Outgoing</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('letters.view_letter', letter_id=letter.id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                {% if current_user.is_admin %}
+                                <a href="{{ url_for('letters.edit_letter', letter_id=letter.id) }}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% endif %}
+                                {% if letter.letter_content %}
+                                <a href="{{ url_for('letters.download_letter', letter_id=letter.id) }}" class="btn btn-sm btn-success">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <a href="{{ url_for('letters.download_letter', letter_id=letter.id, inline=1) }}" class="btn btn-sm btn-warning" target="_blank">
+                                    <i class="fas fa-file-pdf"></i>
+                                </a>
+                                {% endif %}
+                                {% if current_user.is_admin and current_user.is_head_office %}
+                                <form action="{{ url_for('letters.delete_letter', letter_id=letter.id) }}" method="POST" class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to delete this letter?');">
+                                    <input type="hidden" name="source" value="project">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No letters found for this project</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" aria-labelledby="deleteProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteProjectModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete project <strong>{{ project.project_code }}: {{ project.name }}</strong>?</p>
+                <p class="text-danger"><strong>Warning:</strong> This action cannot be undone.</p>
+                {% if stats.total_letters > 0 %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-circle me-2"></i>This project has {{ stats.total_letters }} letters. 
+                    You must delete all letters before deleting the project.
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                {% if stats.total_letters == 0 %}
+                <form action="{{ url_for('projects.delete_project', project_id=project.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete Project</button>
+                </form>
+                {% else %}
+                <button type="button" class="btn btn-danger" disabled>Delete Project</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filter letters by type
+    document.getElementById('showAll').addEventListener('click', function() {
+        filterLetters('all');
+        setActiveButton(this);
+    });
+    
+    document.getElementById('showIncoming').addEventListener('click', function() {
+        filterLetters('incoming');
+        setActiveButton(this);
+    });
+    
+    document.getElementById('showOutgoing').addEventListener('click', function() {
+        filterLetters('outgoing');
+        setActiveButton(this);
+    });
+    
+    function filterLetters(type) {
+        const rows = document.querySelectorAll('#lettersTable tbody tr');
+        rows.forEach(row => {
+            if (type === 'all' || row.getAttribute('data-type') === type) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+    
+    function setActiveButton(btn) {
+        const buttons = document.querySelectorAll('.btn-group .btn');
+        buttons.forEach(button => {
+            button.classList.remove('active');
+            if (button.id === 'showAll') {
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-outline-primary');
+            } else if (button.id === 'showIncoming') {
+                button.classList.remove('btn-info');
+                button.classList.add('btn-outline-info');
+            } else if (button.id === 'showOutgoing') {
+                button.classList.remove('btn-warning');
+                button.classList.add('btn-outline-warning');
+            }
+        });
+        
+        btn.classList.add('active');
+        if (btn.id === 'showAll') {
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-primary');
+        } else if (btn.id === 'showIncoming') {
+            btn.classList.remove('btn-outline-info');
+            btn.classList.add('btn-info');
+        } else if (btn.id === 'showOutgoing') {
+            btn.classList.remove('btn-outline-warning');
+            btn.classList.add('btn-warning');
+        }
+    }
+    
+    // Set "All" as active by default
+    document.getElementById('showAll').click();
+
+    function confirmDelete() {
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteProjectModal'));
+        deleteModal.show();
+    }
+</script>
+{% endblock %} 

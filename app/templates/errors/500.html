@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Internal Server Error</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Error 500</h5>
+                    <p class="card-text">An unexpected error has occurred. The administrator has been notified.</p>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-primary">Go Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Projects - Letter Registry System{% endblock %}
+
+{% block page_heading %}Projects{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        {% if current_user.is_admin and current_user.is_head_office %}
+        <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary">
+            <i class="fas fa-folder-plus me-2"></i>Create New Project
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Projects List -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">All Projects</h6>
+            <div class="input-group" style="width: 300px;">
+                <input type="text" class="form-control" placeholder="Search projects..." id="projectSearch">
+                <button class="btn btn-outline-secondary" type="button" id="searchButton">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="projectsTable">
+                    <thead>
+                        <tr>
+                            <th>Project Code</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Created</th>
+                            <th>Letters</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in projects %}
+                        <tr>
+                            <td>{{ project.project_code }}</td>
+                            <td>{{ project.name }}</td>
+                            <td>{{ project.description|truncate(50) }}</td>
+                            <td>{{ project.created_at.strftime('%d-%m-%Y') }}</td>
+                            <td>{{ project.letters.count() }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ url_for('projects.view_project', project_id=project.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i> View
+                                    </a>
+                                    {% if current_user.is_admin and current_user.is_head_office %}
+                                    <a href="{{ url_for('projects.edit_project', project_id=project.id) }}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-edit me-1"></i> Edit
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            onclick="confirmDelete('{{ project.id }}', '{{ project.project_code }}')">
+                                        <i class="fas fa-trash me-1"></i> Delete
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No projects found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Project Confirmation Modal -->
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" aria-labelledby="deleteProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteProjectModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete project <strong id="projectToDelete"></strong>?</p>
+                <p class="text-danger"><strong>Warning:</strong> This action cannot be undone.</p>
+                <div class="alert alert-warning" id="deleteWarning" style="display: none;">
+                    <i class="fas fa-exclamation-circle me-2"></i>Projects with letters cannot be deleted.
+                    Please delete all letters from this project first.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteProjectForm" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete Project</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    // Simple client-side search filtering
+    document.getElementById('searchButton').addEventListener('click', filterProjects);
+    document.getElementById('projectSearch').addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            filterProjects();
+        }
+    });
+    
+    function filterProjects() {
+        const input = document.getElementById('projectSearch');
+        const filter = input.value.toUpperCase();
+        const table = document.getElementById('projectsTable');
+        const tr = table.getElementsByTagName('tr');
+        
+        for (let i = 1; i < tr.length; i++) {
+            let txtValue = '';
+            // First three columns (code, name, description)
+            for (let j = 0; j < 3; j++) {
+                const td = tr[i].getElementsByTagName('td')[j];
+                if (td) {
+                    txtValue += td.textContent || td.innerText;
+                }
+            }
+            
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+    
+    // Delete project confirmation
+    function confirmDelete(projectId, projectCode) {
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteProjectModal'));
+        const deleteForm = document.getElementById('deleteProjectForm');
+        deleteForm.action = `/projects/${projectId}/delete`;
+        document.getElementById('projectToDelete').textContent = projectCode;
+        
+        // Check if the project has letters
+        const row = event.target.closest('tr');
+        const letterCount = parseInt(row.querySelector('td:nth-child(5)').textContent);
+        const deleteWarning = document.getElementById('deleteWarning');
+        const deleteButton = deleteForm.querySelector('button[type="submit"]');
+        
+        if (letterCount > 0) {
+            deleteWarning.style.display = 'block';
+            deleteButton.disabled = true;
+        } else {
+            deleteWarning.style.display = 'none';
+            deleteButton.disabled = false;
+        }
+        
+        deleteModal.show();
+    }
+</script>
+{% endblock %}
+{% endblock %} 

@@ -1,0 +1,711 @@
+{% extends "base.html" %}
+
+{% block title %}Help - Letter Registry System{% endblock %}
+
+{% block page_heading %}Help & Documentation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .help-section {
+        margin-bottom: 2.5rem;
+    }
+    .help-card {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        margin-bottom: 1.5rem;
+        border: none;
+    }
+    .help-card-header {
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
+        color: white;
+        font-weight: 600;
+    }
+    .help-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    .help-step {
+        background-color: var(--light-color);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--primary-color);
+    }
+    .help-step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+        font-weight: bold;
+    }
+    .help-topic {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .help-topic:last-child {
+        border-bottom: none;
+    }
+    .help-topic-link {
+        display: block;
+        color: var(--text-color);
+        text-decoration: none;
+        padding: 0.5rem;
+        transition: all 0.2s;
+    }
+    .help-topic-link:hover {
+        background-color: var(--light-color);
+        color: var(--primary-color);
+        border-radius: 0.25rem;
+    }
+    .help-topic-link i {
+        color: var(--primary-color);
+        margin-right: 0.5rem;
+    }
+    .help-screenshot {
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        max-width: 100%;
+        height: auto;
+        margin: 1rem 0;
+    }
+    .help-tip {
+        background-color: rgba(var(--info-rgb), 0.1);
+        border-left: 4px solid var(--info-color);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin: 1rem 0;
+    }
+    .help-warning {
+        background-color: rgba(var(--warning-rgb), 0.1);
+        border-left: 4px solid var(--warning-color);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin: 1rem 0;
+    }
+    .help-toc {
+        position: sticky;
+        top: 2rem;
+    }
+    @media (max-width: 767.98px) {
+        .help-toc {
+            position: relative;
+            top: 0;
+            margin-bottom: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Table of Contents Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="card help-toc">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>Contents</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#getting-started" class="list-group-item list-group-item-action">
+                            <i class="fas fa-play-circle me-2"></i>Getting Started
+                        </a>
+                        <a href="#user-management" class="list-group-item list-group-item-action">
+                            <i class="fas fa-users me-2"></i>User Management
+                        </a>
+                        <a href="#projects" class="list-group-item list-group-item-action">
+                            <i class="fas fa-project-diagram me-2"></i>Projects
+                        </a>
+                        <a href="#letters" class="list-group-item list-group-item-action">
+                            <i class="fas fa-envelope me-2"></i>Letter Management
+                        </a>
+                        <a href="#backups" class="list-group-item list-group-item-action">
+                            <i class="fas fa-database me-2"></i>Database Backups
+                        </a>
+                        <a href="#dark-mode" class="list-group-item list-group-item-action">
+                            <i class="fas fa-moon me-2"></i>Dark Mode
+                        </a>
+                        <a href="#notifications" class="list-group-item list-group-item-action">
+                            <i class="fas fa-bell me-2"></i>Notifications
+                        </a>
+                        <a href="#faq" class="list-group-item list-group-item-action">
+                            <i class="fas fa-question-circle me-2"></i>FAQ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Introduction -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Welcome to the Letter Registry System</h2>
+                    <div class="text-center mb-4">
+                        <i class="fas fa-envelope-open-text help-icon"></i>
+                    </div>
+                    <p class="lead text-center">
+                        This help guide will walk you through all features of the Letter Registry System, 
+                        providing step-by-step instructions on how to effectively use the application.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Getting Started -->
+            <div id="getting-started" class="help-section">
+                <div class="card help-card">
+                    <div class="help-card-header">
+                        <i class="fas fa-play-circle me-2"></i>Getting Started
+                    </div>
+                    <div class="card-body">
+                        <h4>Introduction to the Letter Registry System</h4>
+                        <p>
+                            The Letter Registry System is designed to help you manage incoming and outgoing letters 
+                            associated with various projects. It provides tools for tracking, organizing, and maintaining 
+                            records of all correspondence.
+                        </p>
+                        
+                        <h5 class="mt-4">Navigation</h5>
+                        <p>The main navigation menu is located on the left side of the screen (or in the top menu on mobile devices):</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="help-step">
+                                    <span class="help-step-number">1</span>
+                                    <strong>Dashboard</strong>: View system statistics and activity
+                                </div>
+                                <div class="help-step">
+                                    <span class="help-step-number">2</span>
+                                    <strong>Projects</strong>: View and manage all projects
+                                </div>
+                                <div class="help-step">
+                                    <span class="help-step-number">3</span>
+                                    <strong>New Project</strong>: Create a new project
+                                </div>
+                                <div class="help-step">
+                                    <span class="help-step-number">4</span>
+                                    <strong>Letters</strong>: View and manage all letters
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="help-step">
+                                    <span class="help-step-number">5</span>
+                                    <strong>New Letter</strong>: Create a new letter
+                                </div>
+                                <div class="help-step">
+                                    <span class="help-step-number">6</span>
+                                    <strong>Users</strong>: Manage system users (Admin only)
+                                </div>
+                                <div class="help-step">
+                                    <span class="help-step-number">7</span>
+                                    <strong>Utilities</strong>: Database tools (Admin only)
+                                </div>
+                                <div class="help-step">
+                                    <span class="help-step-number">8</span>
+                                    <strong>Help</strong>: Access this documentation
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mt-4">Creating a New Project</h5>
+                        
+                        <div class="help-step">
+                            <span class="help-step-number">1</span>
+                            <strong>Click "New Project"</strong> in the navigation menu
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">2</span>
+                            <strong>Fill in all required fields</strong>: Project number, name, contractor details, etc.
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">3</span>
+                            <strong>Click "Create Project"</strong> to save the new project
+                        </div>
+                        
+                        <div class="help-tip">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>Tip:</strong> Projects must be created before you can add letters to them.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- User Management -->
+            <div id="user-management" class="help-section">
+                <div class="card help-card">
+                    <div class="help-card-header">
+                        <i class="fas fa-users me-2"></i>User Management
+                    </div>
+                    <div class="card-body">
+                        <h4>Managing User Accounts</h4>
+                        <p>
+                            Only users with Head Office Administrator role can manage user accounts.
+                        </p>
+                        
+                        <h5 class="mt-4">User Roles</h5>
+                        <ul>
+                            <li><strong>Head Office Administrator</strong>: Full access to all features, including user management and database utilities</li>
+                            <li><strong>Head Office Staff</strong>: Can create and manage projects and letters, but cannot access admin features</li>
+                            <li><strong>Regional Office Staff</strong>: Limited access to projects assigned to their region</li>
+                        </ul>
+                        
+                        <h5 class="mt-4">Creating a New User</h5>
+                        <div class="help-step">
+                            <span class="help-step-number">1</span>
+                            <strong>Click "Users"</strong> in the navigation menu (Head Office Admin only)
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">2</span>
+                            <strong>Click "New User"</strong> button
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">3</span>
+                            <strong>Fill in all required fields</strong>: Username, full name, email, role, and temporary password
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">4</span>
+                            <strong>Click "Create User"</strong> to save
+                        </div>
+                        
+                        <div class="help-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Important:</strong> New users must change their temporary password on first login.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Projects -->
+            <div id="projects" class="help-section">
+                <div class="card help-card">
+                    <div class="help-card-header">
+                        <i class="fas fa-project-diagram me-2"></i>Projects
+                    </div>
+                    <div class="card-body">
+                        <h4>Managing Projects</h4>
+                        <p>
+                            Projects represent the main organizational units in the system. All letters 
+                            are associated with a specific project.
+                        </p>
+                        
+                        <h5 class="mt-4">Viewing Projects</h5>
+                        <div class="help-step">
+                            <span class="help-step-number">1</span>
+                            <strong>Click "Projects"</strong> in the navigation menu
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">2</span>
+                            <strong>Use the search box</strong> to filter projects by name, number, or contractor
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">3</span>
+                            <strong>Click on a project</strong> to view its details and associated letters
+                        </div>
+                        
+                        <h5 class="mt-4">Editing Projects</h5>
+                        <div class="help-step">
+                            <span class="help-step-number">1</span>
+                            <strong>Navigate to the project</strong> you want to edit
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">2</span>
+                            <strong>Click "Edit Project"</strong> button
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">3</span>
+                            <strong>Make your changes</strong> to the project fields
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">4</span>
+                            <strong>Click "Save Changes"</strong> to update the project
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Letters -->
+            <div id="letters" class="help-section">
+                <div class="card help-card">
+                    <div class="help-card-header">
+                        <i class="fas fa-envelope me-2"></i>Letters
+                    </div>
+                    <div class="card-body">
+                        <h4>Working with Letters</h4>
+                        <p>
+                            Letters are the core records in the system. They represent the correspondence
+                            sent or received related to projects.
+                        </p>
+                        
+                        <h5 class="mt-4">Creating a New Letter</h5>
+                        
+                        <div class="help-step">
+                            <span class="help-step-number">1</span>
+                            <strong>Click "New Letter"</strong> in the navigation menu
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">2</span>
+                            <strong>Select a project</strong> from the dropdown menu
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">3</span>
+                            <strong>Fill in all required fields</strong>: Subject, type (incoming/outgoing), date, etc.
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">4</span>
+                            <strong>Generate letter numbers</strong> by clicking the "Generate" buttons
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">5</span>
+                            <strong>Upload any attachments</strong> if needed
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">6</span>
+                            <strong>Click "Create Letter"</strong> to save
+                        </div>
+                        
+                        <h5 class="mt-4">Letter Numbering System</h5>
+                        <p>
+                            The system automatically generates two numbers for each letter:
+                        </p>
+                        
+                        <ul>
+                            <li><strong>H.O. Number</strong>: A sequential number across the entire system</li>
+                            <li><strong>Project Number</strong>: A sequential number specific to the project</li>
+                        </ul>
+                        
+                        <h5 class="mt-4">Searching for Letters</h5>
+                        <div class="help-step">
+                            <span class="help-step-number">1</span>
+                            <strong>Click "Letters"</strong> in the navigation menu
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">2</span>
+                            <strong>Use the search filters</strong> to narrow down results
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">3</span>
+                            <strong>Click on a letter</strong> to view its details
+                        </div>
+                        
+                        <div class="help-tip">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>Tip:</strong> You can search by letter number, subject, project, date, or type.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Database Backups -->
+            <div id="backups" class="help-section">
+                <div class="card help-card">
+                    <div class="help-card-header">
+                        <i class="fas fa-database me-2"></i>Database Backups
+                    </div>
+                    <div class="card-body">
+                        <h4>Managing Database Backups</h4>
+                        <p>
+                            Head Office Administrators can create and restore database backups to protect
+                            against data loss. This feature is only available to users with administrator privileges.
+                        </p>
+                        
+                        <h5 class="mt-4">Creating a Manual Backup</h5>
+                        
+                        <div class="help-step">
+                            <span class="help-step-number">1</span>
+                            <strong>Click "Utilities"</strong> in the navigation menu
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">2</span>
+                            <strong>Select the "Backup Database" tab</strong> if not already selected
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">3</span>
+                            <strong>Click "Create Backup"</strong> button
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">4</span>
+                            <strong>Wait for confirmation</strong> that the backup was created
+                        </div>
+                        
+                        <div class="help-tip">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>Tip:</strong> The system also creates automatic backups daily.
+                        </div>
+                        
+                        <h5 class="mt-4">Restoring from a Backup</h5>
+                        
+                        <div class="help-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Warning:</strong> Restoring a database will replace all current data. This action cannot be undone.
+                        </div>
+                        
+                        <div class="help-step">
+                            <span class="help-step-number">1</span>
+                            <strong>Click "Utilities"</strong> in the navigation menu
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">2</span>
+                            <strong>Select the "Restore Database" tab</strong>
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">3</span>
+                            <strong>Choose from previous backups</strong> or upload a backup file
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">4</span>
+                            <strong>Click "Restore"</strong> and confirm your action
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">5</span>
+                            <strong>Wait for completion</strong> and follow instructions to restart
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dark Mode -->
+            <div id="dark-mode" class="help-section">
+                <div class="card help-card">
+                    <div class="help-card-header">
+                        <i class="fas fa-moon me-2"></i>Dark Mode
+                    </div>
+                    <div class="card-body">
+                        <h4>Using Dark Mode</h4>
+                        <p>
+                            The system includes a dark mode feature that reduces eye strain in low-light 
+                            environments. Your preference is remembered across sessions.
+                        </p>
+                        
+                        <h5 class="mt-4">Toggling Dark Mode</h5>
+                        
+                        <div class="help-step">
+                            <span class="help-step-number">1</span>
+                            <strong>Click the user dropdown</strong> in the top-right corner
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">2</span>
+                            <strong>Select "Toggle Dark Mode"</strong> from the menu
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">3</span>
+                            <strong>The system will immediately switch</strong> between light and dark modes
+                        </div>
+                        
+                        <div class="help-tip">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>Tip:</strong> Dark mode can also help conserve battery life on many devices.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notifications -->
+            <div id="notifications" class="help-section">
+                <div class="card help-card">
+                    <div class="help-card-header">
+                        <i class="fas fa-bell me-2"></i>Notifications
+                    </div>
+                    <div class="card-body">
+                        <h4>Understanding Notifications</h4>
+                        <p>
+                            The system automatically generates notifications for important events, such as 
+                            new letters, project updates, or database backups.
+                        </p>
+                        
+                        <h5 class="mt-4">Accessing Notifications</h5>
+                        
+                        <div class="help-step">
+                            <span class="help-step-number">1</span>
+                            <strong>Click the bell icon</strong> in the top navigation bar
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">2</span>
+                            <strong>View the list of notifications</strong> in the dropdown
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">3</span>
+                            <strong>Click on a notification</strong> to navigate to the related item
+                        </div>
+                        <div class="help-step">
+                            <span class="help-step-number">4</span>
+                            <strong>Notifications are marked as read</strong> when you click on them
+                        </div>
+                        
+                        <h5 class="mt-4">Types of Notifications</h5>
+                        <ul>
+                            <li><strong>New Letters</strong>: When a new letter is added to a project you have access to</li>
+                            <li><strong>Project Updates</strong>: When project details are changed</li>
+                            <li><strong>Database Operations</strong>: When backups are created or restored</li>
+                            <li><strong>System Messages</strong>: Important announcements from administrators</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ -->
+            <div id="faq" class="help-section">
+                <div class="card help-card">
+                    <div class="help-card-header">
+                        <i class="fas fa-question-circle me-2"></i>FAQ
+                    </div>
+                    <div class="card-body">
+                        <h4>Frequently Asked Questions</h4>
+                        
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        How do I reset my password?
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>
+                                            Click on your username in the top-right corner, then select "Change Password".
+                                            You'll need to enter your current password and then your new password twice.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        Can I delete a letter after it's been created?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>
+                                            No, letters cannot be deleted once created to maintain integrity of records.
+                                            However, you can mark a letter as "Invalid" if it was created in error.
+                                            Only Head Office Administrators can mark letters as invalid.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        How often are automatic backups created?
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>
+                                            Automatic backups are created daily at midnight. The system keeps 
+                                            the last 30 days of automatic backups. You can also create manual backups
+                                            at any time from the Utilities menu.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingFour">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                        Can I export letters to PDF?
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>
+                                            Yes, when viewing a letter, you can click the "Export to PDF" button
+                                            to generate a PDF version of the letter details. This PDF can be saved
+                                            or printed as needed.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingFive">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                        How do I search for letters by date range?
+                                    </button>
+                                </h2>
+                                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>
+                                            On the Letters page, use the date range filter. Click the date field
+                                            to open a calendar where you can select the start and end dates for your search.
+                                            Then click "Apply Filters" to search within that date range.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Support Contact -->
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <h4>Need Further Assistance?</h4>
+                    <p>
+                        If you need additional help or have questions not covered in this documentation,
+                        please contact your system administrator or the support team.
+                    </p>
+                    <a href="mailto:support@example.com" class="btn btn-primary">
+                        <i class="fas fa-envelope me-2"></i>Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Highlight the current section in table of contents
+    window.addEventListener('scroll', function() {
+        const sections = document.querySelectorAll('.help-section');
+        const tocLinks = document.querySelectorAll('.list-group-item');
+        
+        let currentSection = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (pageYOffset >= (sectionTop - 100)) {
+                currentSection = '#' + section.getAttribute('id');
+            }
+        });
+        
+        tocLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === currentSection) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+{% endblock %} 

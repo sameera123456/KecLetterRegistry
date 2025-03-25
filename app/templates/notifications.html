@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications | KEC Letter Registry{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>All Notifications</h3>
+        <div>
+            <button class="btn btn-outline-primary" id="markAllReadBtn">
+                <i class="fas fa-check-double me-2"></i>Mark All as Read
+            </button>
+            <button class="btn btn-outline-danger ms-2" id="clearAllBtn">
+                <i class="fas fa-trash-alt me-2"></i>Clear All Notifications
+            </button>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Your Notifications</h5>
+            <span class="badge bg-light text-primary">{{ notifications|length }} Total</span>
+        </div>
+        <div class="card-body p-0">
+            {% if notifications %}
+                <div class="list-group list-group-flush" id="notificationsList">
+                    {% for notification in notifications %}
+                    <div class="list-group-item list-group-item-action notification-item {{ 'unread' if not notification.read }}">
+                        <div class="d-flex w-100 align-items-center">
+                            <div class="notification-icon {{ notification.icon_color }} me-3">
+                                <i class="fas {{ notification.icon }}"></i>
+                            </div>
+                            <div class="notification-content flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="notification-title mb-0">{{ notification.title }}</h6>
+                                    <small class="notification-time text-muted">{{ notification.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                </div>
+                                <p class="notification-text mb-0">{{ notification.message }}</p>
+                                {% if notification.link %}
+                                <a href="{{ notification.link }}" class="btn btn-sm btn-link px-0 mt-1">View Details</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="p-4 text-center">
+                    <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                    <p class="mb-0">You don't have any notifications yet.</p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer text-muted">
+            <small>Notifications are automatically marked as read when visiting this page.</small>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const markAllReadBtn = document.getElementById('markAllReadBtn');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    const notificationsList = document.getElementById('notificationsList');
+
+    // Mark all as read
+    markAllReadBtn.addEventListener('click', async function() {
+        if (!confirm('Mark all notifications as read?')) return;
+
+        try {
+            const response = await fetch('/api/notifications/mark-all-read', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to mark all notifications as read');
+            }
+
+            // Update UI
+            const unreadNotifications = document.querySelectorAll('.notification-item.unread');
+            unreadNotifications.forEach(notification => {
+                notification.classList.remove('unread');
+            });
+
+            showToast('success', 'All notifications marked as read');
+        } catch (error) {
+            console.error('Error marking all notifications as read:', error);
+            showToast('error', 'Failed to mark all notifications as read');
+        }
+    });
+
+    // Clear all notifications
+    clearAllBtn.addEventListener('click', async function() {
+        if (!confirm('Are you sure you want to clear all notifications? This cannot be undone.')) return;
+
+        try {
+            const response = await fetch('/api/notifications/clear-all', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to clear notifications');
+            }
+
+            // Update UI
+            const cardBody = notificationsList.parentElement;
+            cardBody.innerHTML = `
+                <div class="p-4 text-center">
+                    <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                    <p class="mb-0">You don't have any notifications yet.</p>
+                </div>
+            `;
+
+            showToast('success', 'All notifications cleared');
+            
+            // Update the notification counter in the header
+            const counter = document.getElementById('notification-counter');
+            if (counter) {
+                counter.textContent = '0';
+                counter.style.display = 'none';
+                counter.classList.remove('has-new');
+            }
+            
+            // Redirect to the dashboard after a short delay
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500);
+        } catch (error) {
+            console.error('Error clearing notifications:', error);
+            showToast('error', 'Failed to clear notifications');
+        }
+    });
+});
+</script>
+{% endblock %} 

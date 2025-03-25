@@ -1,0 +1,211 @@
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #222;
+    color: #f0f0f0;
+}
+
+body.dark-mode .card {
+    background-color: #333;
+    border-color: #444;
+}
+
+body.dark-mode .card-header {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #f0f0f0;
+}
+
+body.dark-mode .table {
+    color: #f0f0f0;
+}
+
+body.dark-mode .table-hover tbody tr:hover {
+    background-color: #444;
+}
+
+body.dark-mode .navbar {
+    background-color: #2a2a2a !important;
+}
+
+body.dark-mode .navbar-top {
+    background-color: #2a2a2a !important;
+    color: #f0f0f0;
+}
+
+body.dark-mode .sidebar {
+    background-color: #333;
+    background-image: none;
+    border-right: 1px solid #444;
+}
+
+body.dark-mode .nav-link-grid {
+    color: #f0f0f0;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .nav-link-grid:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .nav-link-grid.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #444;
+    border-color: #555;
+    color: #f0f0f0;
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #aaa;
+}
+
+body.dark-mode .modal-content {
+    background-color: #333;
+    border-color: #444;
+}
+
+body.dark-mode .modal-header {
+    border-color: #444;
+}
+
+body.dark-mode .modal-footer {
+    border-color: #444;
+}
+
+body.dark-mode .badge.bg-light {
+    background-color: #444 !important;
+    color: #f0f0f0;
+}
+
+body.dark-mode .page-link {
+    background-color: #333;
+    border-color: #444;
+    color: #f0f0f0;
+}
+
+body.dark-mode .page-link:hover {
+    background-color: #444;
+}
+
+body.dark-mode .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+body.dark-mode .grid-card {
+    background-color: #333;
+    border-color: #444;
+}
+
+body.dark-mode .grid-card-header {
+    background-color: #2a2a2a;
+    border-color: #444;
+}
+
+/* Letter visibility fixes */
+body.dark-mode .page-heading {
+    color: #f0f0f0;
+}
+
+body.dark-mode .user-dropdown-toggle {
+    color: #f0f0f0;
+}
+
+body.dark-mode .btn-outline-secondary {
+    color: #f0f0f0;
+    border-color: #555;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+    background-color: #444;
+    color: #f0f0f0;
+}
+
+body.dark-mode .table th {
+    color: #f0f0f0;
+    background-color: #2a2a2a;
+}
+
+body.dark-mode .grid-view .card {
+    background-color: #333;
+}
+
+body.dark-mode .text-dark {
+    color: #f0f0f0 !important;
+}
+
+body.dark-mode a {
+    color: #6ea8fe;
+}
+
+body.dark-mode a:hover {
+    color: #9ec5fe;
+}
+
+/* Specific fixes for letter details */
+body.dark-mode .letter-details,
+body.dark-mode .letter-subject,
+body.dark-mode .letter-date,
+body.dark-mode .letter-status {
+    color: #f0f0f0 !important;
+}
+
+body.dark-mode .letter-badge {
+    background-color: #444 !important;
+    color: #f0f0f0 !important;
+}
+
+/* Create Letter Form Fixes */
+body.dark-mode .form-section {
+    background-color: #333;
+    border-color: #444;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+body.dark-mode .form-section-title {
+    color: #f0f0f0;
+    border-bottom-color: #444;
+}
+
+body.dark-mode .icon-info { color: #45c8f1; }
+body.dark-mode .icon-file { color: #8c68f9; }
+body.dark-mode .icon-tasks { color: #ff9c4a; }
+body.dark-mode .icon-plus { color: #2de0b0; }
+body.dark-mode .icon-upload { color: #ff6b6b; }
+body.dark-mode .icon-notes { color: #9e77e0; }
+
+body.dark-mode .btn-check:checked + .btn-outline-primary {
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+body.dark-mode .btn-outline-primary {
+    color: #6ea8fe;
+    border-color: #6ea8fe;
+}
+
+body.dark-mode .btn-outline-primary:hover {
+    color: #212529;
+    background-color: #6ea8fe;
+    border-color: #6ea8fe;
+}
+
+body.dark-mode .form-text {
+    color: #aaa;
+}
+
+body.dark-mode .required-field::after {
+    color: #ff6b6b;
+}
+
+body.dark-mode .bg-primary {
+    background-color: #0d6efd !important;
+}
+
+body.dark-mode .bg-info {
+    background-color: #0dcaf0 !important;
+} 

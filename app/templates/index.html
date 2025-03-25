@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Letter Registry System{% endblock %}
+
+{% block page_heading %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2 card-dashboard">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Projects</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_projects }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-project-diagram fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer py-2">
+                    <a href="{{ url_for('projects.list_projects') }}" class="btn btn-sm btn-primary">View Projects</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2 card-dashboard">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Letters</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_letters }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-envelope fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer py-2">
+                    <a href="{{ url_for('letters.list_letters') }}" class="btn btn-sm btn-success">View Letters</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2 card-dashboard">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Incoming Letters</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.incoming_letters }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-inbox fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer py-2">
+                    <a href="{{ url_for('letters.list_letters', is_incoming='true') }}" class="btn btn-sm btn-info">View Incoming</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2 card-dashboard">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Outgoing Letters</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.outgoing_letters }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-paper-plane fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer py-2">
+                    <a href="{{ url_for('letters.list_letters', is_incoming='false') }}" class="btn btn-sm btn-warning">View Outgoing</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity and Quick Actions -->
+    <div class="row">
+        <!-- Recent Letters -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Letters</h6>
+                    <a href="{{ url_for('letters.list_letters') }}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Letter Number</th>
+                                    <th>Project</th>
+                                    <th>Date</th>
+                                    <th>Subject</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for letter in recent_letters %}
+                                <tr>
+                                    <td>
+                                        <span class="badge {% if letter.is_incoming %}bg-primary{% else %}bg-success{% endif %}">
+                                            {{ 'IN' if letter.is_incoming else 'OUT' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ letter.letter_number }}</td>
+                                    <td>{{ letter.project.project_code }}</td>
+                                    <td>{{ letter.date.strftime('%d-%m-%Y') }}</td>
+                                    <td>{{ letter.object_of }}</td>
+                                    <td>
+                                        <a href="{{ url_for('letters.view_letter', letter_id=letter.id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No letters found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <div class="dropdown mb-3">
+                            <button class="btn btn-primary dropdown-toggle w-100" type="button" id="newLetterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-plus-circle me-2"></i>Register New Letter
+                            </button>
+                            <ul class="dropdown-menu w-100" aria-labelledby="newLetterDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('letters.create_letter', is_incoming=1) }}">
+                                    <i class="fas fa-inbox me-2"></i>New Incoming Letter
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('letters.create_letter', is_incoming=0) }}">
+                                    <i class="fas fa-paper-plane me-2"></i>New Outgoing Letter
+                                </a></li>
+                            </ul>
+                        </div>
+                        <a href="{{ url_for('projects.create_project') }}" class="btn btn-success btn-block mb-3">
+                            <i class="fas fa-folder-plus me-2"></i>Create New Project
+                        </a>
+                        <a href="{{ url_for('letters.list_letters', is_incoming='true') }}" class="btn btn-info btn-block mb-3">
+                            <i class="fas fa-inbox me-2"></i>View Incoming Letters
+                        </a>
+                        <a href="{{ url_for('letters.list_letters', is_incoming='false') }}" class="btn btn-warning btn-block">
+                            <i class="fas fa-paper-plane me-2"></i>View Outgoing Letters
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">System Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <strong>User:</strong> {{ current_user.username }}
+                    </div>
+                    <div class="mb-2">
+                        <strong>Last Login:</strong> {{ current_user.created_at.strftime('%d-%m-%Y %H:%M') }}
+                    </div>
+                    <div>
+                        <strong>System Version:</strong> 1.0.0
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-circle me-2"></i>Welcome, {{ current_user.username }}
+                        <span class="badge {% if current_user.is_admin %}bg-danger{% else %}bg-secondary{% endif %} ms-2">
+                            {% if current_user.is_admin %}Admin User{% else %}Regular User{% endif %}
+                        </span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>Welcome to the KEC Letter Registry System. This system helps you manage and track all incoming and outgoing letters related to your projects.</p>
+                    
+                    {% if current_user.is_admin %}
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-folder-plus me-1"></i> New Project
+                        </a>
+                        <a href="{{ url_for('letters.create_letter', is_incoming=1) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-inbox me-1"></i> New Incoming Letter
+                        </a>
+                        <a href="{{ url_for('letters.create_letter', is_incoming=0) }}" class="btn btn-success btn-sm">
+                            <i class="fas fa-paper-plane me-1"></i> New Outgoing Letter
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="stat-actions mt-3">
+                <a href="{{ url_for('letters.create_letter') }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus-circle me-1"></i>New Letter
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
